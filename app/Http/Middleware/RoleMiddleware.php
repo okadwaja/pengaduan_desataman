@@ -12,11 +12,12 @@ class RoleMiddleware
      * Handle an incoming request.
      */
     public function handle(Request $request, Closure $next, $role): Response
-    {
-        if (auth()->check() && auth()->user()->role === $role) {
-            return $next($request);
-        }
-
-        abort(403, 'Akses ditolak.');
+{
+    if (auth()->check() && auth()->user()->role === $role) {
+        return $next($request);
     }
+
+    abort(403, 'Akses ditolak.');
+}
+
 }

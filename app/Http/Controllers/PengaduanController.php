@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pengaduan;
 use Illuminate\Http\Request;
 
 class PengaduanController extends Controller
@@ -10,10 +11,21 @@ class PengaduanController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        return view('pengaduan.index');
-        
+{
+    $user = auth()->user();
+
+    if ($user->role === 'admin') {
+        // Admin melihat semua pengaduan
+        $pengaduan = Pengaduan::with('user')->latest()->get();
+        return view('admin.pengaduan.index', compact('pengaduan', 'user'));
+    } else {
+        // Masyarakat hanya melihat pengaduan miliknya
+        $pengaduan = Pengaduan::where('user_id', $user->id)->latest()->get();
+        return view('masyarakat.pengaduan.index', compact('pengaduan', 'user'));
+
     }
+}
+
 
     /**
      * Show the form for creating a new resource.
@@ -21,7 +33,7 @@ class PengaduanController extends Controller
     public function create()
     {
         //
-        return view('pengaduan.create');
+        return view('masyarakat.pengaduan.create');
     }
 
     /**
@@ -50,7 +62,7 @@ class PengaduanController extends Controller
             'status' => 'menunggu',
         ]);
     
-        return redirect()->route('pengaduan.index')->with('success', 'Pengaduan berhasil dikirim!');
+        return redirect()->route('masyarakat.pengaduan.index')->with('success', 'Pengaduan berhasil dikirim!');
     }
 
     /**

@@ -23,21 +23,29 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Route untuk admin
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', function () {
         return view('admin.dashboard');
-    })->name('admin.dashboard');
+    })->name('dashboard');
+
+    // Admin bisa lihat semua pengaduan
+    Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
 });
+
 
 // Route untuk masyarakat
-Route::middleware(['auth', 'role:masyarakat'])->group(function () {
-    Route::get('/masyarakat/dashboard', function () {
+Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->name('masyarakat.')->group(function () {
+    Route::get('/dashboard', function () {
         return view('masyarakat.dashboard');
-    })->name('masyarakat.dashboard');
+    })->name('dashboard');
 
-    // Route resource pengaduan khusus masyarakat
-    Route::resource('pengaduan', PengaduanController::class);
+    // Route index untuk masyarakat melihat daftar pengaduan miliknya
+    Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
+
+    // Resource route lainnya (create, store, show, edit, update, destroy)
+    Route::resource('pengaduan', PengaduanController::class)->except(['index']);
 });
+
 
 // Route profile (bisa diakses semua yang login)
 Route::middleware('auth')->group(function () {

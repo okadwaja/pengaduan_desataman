@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,28 +27,48 @@
 </head>
 
 <body id="page-top">
+
 <div class="container">
-    <h2>Form Pengaduan Masyarakat</h2>
-    <form action="{{ route('pengaduan.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
+    <h2>Daftar Pengaduan</h2>
 
-        <div class="form-group mb-3">
-            <label>Judul</label>
-            <input type="text" name="judul" class="form-control" required>
-        </div>
-
-        <div class="form-group mb-3">
-            <label>Isi Pengaduan</label>
-            <textarea name="isi" class="form-control" rows="5" required></textarea>
-        </div>
-
-        <div class="form-group mb-3">
-            <label>Foto (opsional)</label>
-            <input type="file" name="foto" class="form-control">
-        </div>
-
-        <button type="submit" class="btn btn-primary">Kirim Pengaduan</button>
-    </form>
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                @if($user->role === 'admin')
+                    <th>Nama Pengirim</th>
+                @endif
+                <th>Judul</th>
+                <th>Isi</th>
+                <th>Status</th>
+                <th>Tanggal</th>
+                @if($user->role === 'admin')
+                    <th>Aksi</th>
+                @endif
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($pengaduan as $item)
+                <tr>
+                    @if($user->role === 'admin')
+                        <td>{{ $item->user->name }}</td>
+                    @endif
+                    <td>{{ $item->judul }}</td>
+                    <td>{{ $item->isi }}</td>
+                    <td>{{ ucfirst($item->status) }}</td>
+                    <td>{{ $item->created_at->format('d M Y') }}</td>
+                    @if($user->role === 'admin')
+                        <td>
+                            <a href="#" class="btn btn-sm btn-primary">Tanggapi</a>
+                        </td>
+                    @endif
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="{{ $user->role === 'admin' ? 6 : 4 }}">Belum ada pengaduan.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
 
     <!-- Bootstrap core JavaScript-->
@@ -70,4 +91,5 @@
 </body>
 
 </html>
+
 @endsection
