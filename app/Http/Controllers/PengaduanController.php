@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Pengaduan;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class PengaduanController extends Controller
 {
@@ -41,27 +44,43 @@ class PengaduanController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $request->validate([
             'judul' => 'required',
             'isi' => 'required',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:3048',
+            'foto' => 'nullable|mimes:jpg,jpeg,png,heic,heif|max:3048',
         ]);
-    
+
         $fotoPath = null;
-    
+
         if ($request->hasFile('foto')) {
-            $fotoPath = $request->file('foto')->store('foto_pengaduan', 'public');
+            $file = $request->file('foto');
+            $extension = strtolower($file->getClientOriginalExtension());
+            $filename = time() . '_' . Str::random(8) . '.jpg'; // hasil akhir tetap jpg
+
+            // Path simpan
+            $savePath = storage_path('app/public/foto_pengaduan/' . $filename);
+
+            if (in_array($extension, ['HEIC', 'HEIF'])) {
+                // Konversi HEIC ke JPG pakai Intervention
+                $image = Image::make($file->getPathname())->encode('jpg', 90);
+                $image->save($savePath);
+            } else {
+                // Format selain HEIC langsung disimpan
+                $file->move(storage_path('app/public/foto_pengaduan'), $filename);
+            }
+
+            // Set path untuk disimpan di DB
+            $fotoPath = 'foto_pengaduan/' . $filename;
         }
-    
-        \App\Models\Pengaduan::create([
-            'user_id' => auth()->user()->id, // ambil ID user yang sedang login
+
+        Pengaduan::create([
+            'user_id' => auth()->user()->id,
             'judul' => $request->judul,
             'isi' => $request->isi,
             'foto' => $fotoPath,
             'status' => 'menunggu',
         ]);
-    
+
         return redirect()->route('masyarakat.pengaduan.index')->with('success', 'Pengaduan berhasil dikirim!');
     }
 
