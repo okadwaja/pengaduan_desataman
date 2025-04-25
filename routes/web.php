@@ -30,6 +30,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Admin bisa lihat semua pengaduan
     Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
+
+    // Resource route lainnya (create, store, show, edit, update, destroy)
+    Route::resource('pengaduan', PengaduanController::class)->except(['index']);
 });
 
 

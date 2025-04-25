@@ -89,8 +89,22 @@ class PengaduanController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $pengaduan = Pengaduan::with('user')->findOrFail($id);
+        $user = auth()->user();
+
+        // Cek jika masyarakat hanya boleh lihat miliknya sendiri
+        if ($user->role === 'masyarakat' && $pengaduan->user_id !== $user->id) {
+            abort(403); // Forbidden
+        }
+
+        // Arahkan view berdasarkan role
+        if ($user->role === 'admin') {
+            return view('admin.pengaduan.show', compact('pengaduan'));
+        }
+
+        return view('masyarakat.pengaduan.show', compact('pengaduan'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
