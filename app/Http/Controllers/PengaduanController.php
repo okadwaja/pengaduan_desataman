@@ -60,7 +60,7 @@ class PengaduanController extends Controller
             // Path simpan
             $savePath = storage_path('app/public/foto_pengaduan/' . $filename);
 
-            if (in_array($extension, ['HEIC', 'HEIF'])) {
+            if (in_array($extension, ['heic', 'heif'])) {
                 // Konversi HEIC ke JPG pakai Intervention
                 $image = Image::make($file->getPathname())->encode('jpg', 90);
                 $image->save($savePath);
