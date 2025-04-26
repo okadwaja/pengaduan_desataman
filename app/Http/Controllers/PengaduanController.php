@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 
+
 class PengaduanController extends Controller
 {
     /**
@@ -63,33 +64,65 @@ class PengaduanController extends Controller
                 $file = $request->file('foto');
                 $extension = strtolower($file->getClientOriginalExtension());
                 $filename = time() . '_' . Str::random(8) . '.jpg'; // hasil akhir tetap jpg
+
+                //Path simpan final
                 $savePath = storage_path('app/public/foto_pengaduan/' . $filename);
-
-                if (in_array($extension, ['heic', 'heif'])) {
-                    $tempFolder = storage_path('app/temp_upload');
-                    if (!file_exists($tempFolder)) {
-                        mkdir($tempFolder, 0755, true);
-                    }
-
-                    $tmpPath = $tempFolder . '/' . $file->getClientOriginalName();
-                    $file->move($tempFolder, $file->getClientOriginalName());
-
-                    $imagick = new \Imagick();
-                    $imagick->readImage($tmpPath);
-                    $imagick->setImageFormat('jpg');
-                    $imagick->setImageCompressionQuality(90);
-                    $imagick->writeImage($savePath);
-                    $imagick->clear();
-                    $imagick->destroy();
-                    
-                    unlink($tmpPath);
-                } else {
-                    $file->move(storage_path('app/public/foto_pengaduan'), $filename);
+                
+                if (!file_exists(dirname($savePath))) {
+                    mkdir(dirname($savePath), 0755, true);
                 }
 
-                $fotoPath = 'foto_pengaduan/' . $filename; // << pastikan ini diisi
+                
+                try {
+                    // Untuk file HEIC/HEIF (konversi ke JPG menggunakan Imagick)
+                    if (in_array($extension, ['heic', 'heif'])) {
+                        $tempFolder = storage_path('app/temp_upload');
+                        if (!file_exists($tempFolder)) {
+                            mkdir($tempFolder, 0755, true);
+                        }
+            
+                        $tmpPath = $tempFolder . '/' . $file->getClientOriginalName();
+                        $file->move($tempFolder, $file->getClientOriginalName());
+            
+                        // Gunakan Imagick untuk konversi ke JPG
+                        $imagick = new \Imagick($tmpPath);
+                        $imagick->setImageFormat('jpg');
+                        $imagick->setImageCompression(\Imagick::COMPRESSION_JPEG);
+                        $imagick->setImageCompressionQuality(50); // <= kualitas setelah dikompres
+                        $imagick->stripImage(); // hapus metadata (bikin lebih kecil)
+                        $imagick->writeImage($savePath);
+                        $imagick->clear();
+                        $imagick->destroy();
+                        unlink($tmpPath);
+                    } else {
+                        // Untuk format JPG, PNG, JPEG biasa (gunakan Imagick untuk kompresi)
+                        $imagick = new \Imagick();
+                        $imagick->readImage($file->getPathname());
+                        $imagick->setImageFormat('jpg'); // Pastikan hasil akhirnya JPG
+                        $imageSize = $file->getSize();
+            
+                        if ($imageSize > 2 * 1024 * 1024) { // lebih dari 2 MB
+                            $imagick->setImageCompressionQuality(50); // kompres kualitas 50%
+                        } else {
+                            $imagick->setImageCompressionQuality(50);
+                        }
+                        $imagick->writeImage($savePath);
+                        $imagick->clear();
+                        $imagick->destroy();
+                    }
+            
+                    // Set path yang akan disimpan ke database
+                    $fotoPath = 'foto_pengaduan/' . $filename;
+                } catch (\Exception $e) {
+                    \Log::error('Upload error dengan Imagick: ' . $e->getMessage());
+                    return back()->withErrors(['foto' => 'Gagal memproses gambar: ' . $e->getMessage()]);
+                }
             }
 
+            if ($request->hasFile('foto') && $fotoPath === null) {
+                return back()->withErrors(['foto' => 'File foto gagal diproses.']);
+            }
+            
             Pengaduan::create([
                 'user_id' => auth()->user()->id,
                 'judul' => $request->judul,
