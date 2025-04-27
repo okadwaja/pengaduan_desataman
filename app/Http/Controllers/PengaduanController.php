@@ -88,7 +88,7 @@ class PengaduanController extends Controller
                         $imagick = new \Imagick($tmpPath);
                         $imagick->setImageFormat('jpg');
                         $imagick->setImageCompression(\Imagick::COMPRESSION_JPEG);
-                        $imagick->setImageCompressionQuality(50); // <= kualitas setelah dikompres
+                        $imagick->setImageCompressionQuality(10); // <= kualitas setelah dikompres
                         $imagick->stripImage(); // hapus metadata (bikin lebih kecil)
                         $imagick->writeImage($savePath);
                         $imagick->clear();
@@ -102,9 +102,9 @@ class PengaduanController extends Controller
                         $imageSize = $file->getSize();
             
                         if ($imageSize > 2 * 1024 * 1024) { // lebih dari 2 MB
-                            $imagick->setImageCompressionQuality(50); // kompres kualitas 50%
+                            $imagick->setImageCompressionQuality(10); // kompres kualitas 50%
                         } else {
-                            $imagick->setImageCompressionQuality(80);
+                            $imagick->setImageCompressionQuality(30);
                         }
                         $imagick->writeImage($savePath);
                         $imagick->clear();
