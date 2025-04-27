@@ -26,11 +26,13 @@
                     <td>
                         <a href="{{ route('masyarakat.pengaduan.show', $item->id) }}" class="btn btn-info btn-sm">Lihat</a>
                         <a href="{{ route('masyarakat.pengaduan.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('masyarakat.pengaduan.destroy', $item->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
-                        </form>
+                        @if ($item->user_id == Auth::id()) <!-- Cek jika pengaduan milik pengguna yang sedang login -->
+                            <form action="{{ route('masyarakat.pengaduan.destroy', $item->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus pengaduan ini?')">Hapus</button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
             @empty

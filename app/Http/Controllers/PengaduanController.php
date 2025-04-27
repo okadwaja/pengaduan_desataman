@@ -9,6 +9,8 @@ use App\Models\Pengaduan;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+
 
 
 class PengaduanController extends Controller
@@ -184,6 +186,19 @@ class PengaduanController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+    // Ambil pengaduan berdasarkan ID
+    $pengaduan = Pengaduan::findOrFail($id);
+
+    // Cek apakah pengaduan milik pengguna yang sedang login
+    if ($pengaduan->user_id !== Auth::id()) {
+        // Jika bukan, beri pesan error atau redirect
+        return redirect()->back()->with('error', 'Anda tidak dapat menghapus pengaduan ini.');
+    }
+
+    // Hapus pengaduan
+    $pengaduan->delete();
+
+    // Redirect kembali dengan pesan sukses
+    return redirect()->route('masyarakat.pengaduan.index')->with('success', 'Pengaduan berhasil dihapus.');
     }
 }
