@@ -104,7 +104,7 @@ class PengaduanController extends Controller
                         if ($imageSize > 2 * 1024 * 1024) { // lebih dari 2 MB
                             $imagick->setImageCompressionQuality(50); // kompres kualitas 50%
                         } else {
-                            $imagick->setImageCompressionQuality(50);
+                            $imagick->setImageCompressionQuality(80);
                         }
                         $imagick->writeImage($savePath);
                         $imagick->clear();

@@ -1,31 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>SB Admin 2 - Dashboard</title>
-
-    <!-- Custom fonts for this template-->
-    <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
-
-</head>
-
-<body id="page-top">
 <div class="container">
     <h2>Form Pengaduan Masyarakat</h2>
     <form action="{{ route('masyarakat.pengaduan.store') }}" method="POST" enctype="multipart/form-data">
@@ -42,32 +17,83 @@
         </div>
 
         <div class="form-group mb-3">
-            <label>Foto (opsional)</label>
-            <input type="file" name="foto" class="form-control">
+            <label>Foto</label>
+            <input type="file" name="foto" id="foto" class="form-control" accept="image/*,.heic,.heif" onchange="previewImage(event)" required>
         </div>
 
-        <button type="submit" class="btn btn-primary">Kirim Pengaduan</button>
+        <div id="preview-container" style="margin-top: 10px; display: none;">
+            <img id="preview-image" src="#" alt="Preview Foto" style="max-width: 300px; border: 1px solid #ddd; padding: 5px;">
+            <button type="button" id="remove-preview" class="btn btn-sm btn-danger mt-2">Hapus Gambar</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Kirim Pengaduan</button>
     </form>
 </div>
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-
-    <!-- Page level plugins -->
-    <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
-    <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
-
-</body>
-
-</html>
 @endsection
+
+@push('scripts')
+<!-- Tambahkan library heic2any -->
+<script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
+
+<script>
+function previewImage(event) {
+    const file = event.target.files[0];
+    const previewContainer = document.getElementById('preview-container');
+    const preview = document.getElementById('preview-image');
+    const removeButton = document.getElementById('remove-preview');
+
+    if (!file) {
+        resetPreview();
+        return;
+    }
+
+    // Mendapatkan ekstensi file
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+
+    if (fileExtension === 'heic' || fileExtension === 'heif') {
+        // Jika file HEIC atau HEIF
+        heic2any({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.8,
+        })
+        .then(function(convertedBlob) {
+            const url = URL.createObjectURL(convertedBlob);
+            preview.src = url;
+            previewContainer.style.display = 'block';
+        })
+        .catch(function(error) {
+            console.error(error);
+            alert('Gagal menampilkan preview HEIC/HEIF. Silakan pilih file lain.');
+            resetPreview();
+        });
+    } else if (file.type.startsWith('image/')) {
+        // Jika file adalah gambar biasa (JPG, PNG, dll)
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            previewContainer.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    } else {
+        // Jika file bukan gambar atau tidak sesuai format
+        alert('Format file tidak didukung. Mohon upload gambar JPG, PNG, atau HEIC.');
+        resetPreview();
+    }
+}
+
+function resetPreview() {
+    const previewContainer = document.getElementById('preview-container');
+    const preview = document.getElementById('preview-image');
+    const fileInput = document.getElementById('foto');
+
+    preview.src = '#';
+    previewContainer.style.display = 'none';
+    fileInput.value = ''; // Reset input file
+}
+
+document.getElementById('remove-preview').addEventListener('click', function() {
+    resetPreview();
+});
+</script>
+@endpush
