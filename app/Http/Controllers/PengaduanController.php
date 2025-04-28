@@ -53,7 +53,7 @@ class PengaduanController extends Controller
             $request->validate([
                 'judul' => 'required',
                 'isi' => 'required',
-                'foto' => 'nullable|mimes:jpg,jpeg,png,heic,heif|max:10240',
+                'foto' => 'required|mimes:jpg,jpeg,png,heic,heif|max:10240',
             ], [
                 'foto.max' => 'Ukuran foto maksimal 10 MB.',
                 'foto.mimes' => 'Format foto harus jpg, jpeg, png, heic, atau heif.',
@@ -170,7 +170,19 @@ class PengaduanController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $pengaduan = Pengaduan::findOrFail($id);
+
+        // Cek apakah pengaduan milik user yang sedang login
+        if ($pengaduan->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'Anda tidak dapat mengedit pengaduan ini.');
+        }
+
+        // Cek status pengaduan
+        if ($pengaduan->status !== 'menunggu') {
+            return redirect()->back()->with('error', 'Pengaduan hanya bisa diedit ketika belum ditanggapi.');
+        }
+
+        return view('masyarakat.pengaduan.edit', compact('pengaduan'));
     }
 
     /**
@@ -178,7 +190,52 @@ class PengaduanController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $pengaduan = Pengaduan::findOrFail($id);
+
+        // Cek apakah pengaduan milik user yang sedang login
+        if ($pengaduan->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'Anda tidak dapat mengedit pengaduan ini.');
+        }
+
+        // Cek status pengaduan
+        if ($pengaduan->status !== 'menunggu') {
+            return redirect()->back()->with('error', 'Pengaduan hanya bisa diedit saat status masih menunggu.');
+        }
+
+        // Validasi data
+        $validatedData = $request->validate([
+            'judul' => 'required|string|max:255',
+            'isi' => 'required|string',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,heic,heif|max:2048',
+        ]);
+
+        // Jika ada file foto baru diupload
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            if ($pengaduan->foto) {
+                Storage::delete('public/foto_pengaduan/' . $pengaduan->foto);
+            }
+
+            // Simpan foto baru
+            $foto = $request->file('foto');
+            $namaFoto = time() . '.' . $foto->getClientOriginalExtension();
+            $foto->storeAs('public/foto_pengaduan', $namaFoto);
+
+            // Update data pengaduan beserta foto
+            $pengaduan->update([
+                'judul' => $validatedData['judul'],
+                'isi' => $validatedData['isi'],
+                'foto' => $namaFoto,
+            ]);
+        } else {
+            // Update data tanpa mengubah foto
+            $pengaduan->update([
+                'judul' => $validatedData['judul'],
+                'isi' => $validatedData['isi'],
+            ]);
+        }
+
+        return redirect()->route('masyarakat.pengaduan.index')->with('success', 'Pengaduan berhasil diperbarui.');
     }
 
     /**

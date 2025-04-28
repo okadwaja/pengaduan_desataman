@@ -28,6 +28,7 @@
 
         <button type="submit" class="btn btn-primary mt-3">Kirim Pengaduan</button>
     </form>
+    <a href="{{ route('masyarakat.pengaduan.index') }}" class="btn btn-secondary mt-3">Kembali</a>
 </div>
 @endsection
 

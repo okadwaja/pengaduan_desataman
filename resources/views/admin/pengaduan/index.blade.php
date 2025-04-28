@@ -26,7 +26,7 @@
                     <td>{{ $item->created_at->format('d M Y') }}</td>
                         <td>
                             <a href="#" class="btn btn-sm btn-primary">Tanggapi</a>
-                            <a href="{{ route('admin.pengaduan.show', $item->id) }}" class="btn btn-info btn-sm">Lihat</a>
+                            <a href="{{ route('admin.pengaduan.show', $item->id) }}" class="btn btn-info btn-sm">Detail</a>
                         </td>
                 </tr>
             @empty
