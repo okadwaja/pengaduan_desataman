@@ -2,19 +2,6 @@
 
 @section('content')
 <div class="container">
-
-    @if (session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <h2>Edit Pengaduan</h2>
     <form action="{{ route('masyarakat.pengaduan.update', $pengaduan->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -31,33 +18,75 @@
         </div>
 
         <div class="form-group mb-3">
-        @if($pengaduan->foto)
-                <div class="mt-3">
-                    <label>Foto</label>
-                    <br>
-                    <!-- Menggunakan asset() untuk mengambil path gambar yang benar -->
-                    <img src="{{ asset('storage/' . $pengaduan->foto) }}" alt="Foto Pengaduan" id="foto-preview" style="max-width: 300px; max-height: 300px; margin-bottom: 10px;">
-                </div>
-            @endif
-            <input type="file" name="foto" class="form-control" accept="image/*" id="foto-input">
+            <label>Foto</label>
+            <input type="file" name="foto" class="form-control" id="foto-input" accept="image/*,.heic,.heif" onchange="previewImage(event)">
+
+            <!-- Preview foto -->
+            <div id="preview-container" style="margin-top: 10px; {{ $pengaduan->foto ? '' : 'display: none;' }}">
+                <img id="foto-preview" src="{{ $pengaduan->foto ? asset('storage/foto_pengaduan/' . $pengaduan->foto) : '#' }}" alt="Preview Foto" style="max-width: 300px; border: 1px solid #ddd; padding: 5px;">
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Update Pengaduan</button>
+        <button type="submit" class="btn btn-primary mt-3">Update Pengaduan</button>
     </form>
     <a href="{{ route('masyarakat.pengaduan.index') }}" class="btn btn-secondary mt-3">Kembali</a>
 </div>
+@endsection
+
+@push('scripts')
+<!-- Tambahkan library heic2any -->
+<script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
 
 <script>
-    // Menampilkan preview gambar setelah memilih file
-    document.getElementById('foto-input').addEventListener('change', function (e) {
-        var reader = new FileReader();
-        reader.onload = function (event) {
-            var preview = document.getElementById('foto-preview');
-            preview.src = event.target.result;
-            preview.style.display = 'block';
-        };
-        reader.readAsDataURL(e.target.files[0]);
-    });
-</script>
+function previewImage(event) {
+    const file = event.target.files[0];
+    const previewContainer = document.getElementById('preview-container');
+    const preview = document.getElementById('foto-preview');
 
-@endsection
+    if (!file) {
+        resetPreview();
+        return;
+    }
+
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+
+    if (fileExtension === 'heic' || fileExtension === 'heif') {
+        heic2any({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.8,
+        })
+        .then(function(convertedBlob) {
+            const url = URL.createObjectURL(convertedBlob);
+            preview.src = url;
+            previewContainer.style.display = 'block';
+        })
+        .catch(function(error) {
+            console.error(error);
+            alert('Gagal menampilkan preview HEIC/HEIF. Silakan pilih file lain.');
+            resetPreview();
+        });
+    } else if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            previewContainer.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    } else {
+        alert('Format file tidak didukung. Mohon upload gambar JPG, PNG, atau HEIC.');
+        resetPreview();
+    }
+}
+
+function resetPreview() {
+    const previewContainer = document.getElementById('preview-container');
+    const preview = document.getElementById('foto-preview');
+    const fileInput = document.getElementById('foto-input');
+
+    preview.src = '#';
+    previewContainer.style.display = 'none';
+    fileInput.value = '';
+}
+</script>
+@endpush

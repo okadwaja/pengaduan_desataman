@@ -13,7 +13,7 @@
 
             @if ($pengaduan->foto)
                 <div class="mt-3">
-                    <img src="{{ asset('storage/' . $pengaduan->foto) }}" alt="Foto Pengaduan" class="img-fluid" style="max-width: 400px;">
+                    <img src="{{ asset('storage/foto_pengaduan/' . $pengaduan->foto) }}" alt="Foto Pengaduan" class="img-fluid" style="max-width: 400px;">
                 </div>
             @endif
         </div>

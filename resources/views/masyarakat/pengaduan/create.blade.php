@@ -23,7 +23,6 @@
 
         <div id="preview-container" style="margin-top: 10px; display: none;">
             <img id="preview-image" src="#" alt="Preview Foto" style="max-width: 300px; border: 1px solid #ddd; padding: 5px;">
-            <button type="button" id="remove-preview" class="btn btn-sm btn-danger mt-2">Hapus Gambar</button>
         </div>
 
         <button type="submit" class="btn btn-primary mt-3">Kirim Pengaduan</button>

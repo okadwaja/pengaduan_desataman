@@ -114,7 +114,7 @@ class PengaduanController extends Controller
                     }
             
                     // Set path yang akan disimpan ke database
-                    $fotoPath = 'foto_pengaduan/' . $filename;
+                    $fotoPath = $filename;
                 } catch (\Exception $e) {
                     \Log::error('Upload error dengan Imagick: ' . $e->getMessage());
                     return back()->withErrors(['foto' => 'Gagal memproses gambar: ' . $e->getMessage()]);
@@ -192,51 +192,89 @@ class PengaduanController extends Controller
     {
         $pengaduan = Pengaduan::findOrFail($id);
 
-        // Cek apakah pengaduan milik user yang sedang login
         if ($pengaduan->user_id !== Auth::id()) {
             return redirect()->back()->with('error', 'Anda tidak dapat mengedit pengaduan ini.');
         }
 
-        // Cek status pengaduan
         if ($pengaduan->status !== 'menunggu') {
             return redirect()->back()->with('error', 'Pengaduan hanya bisa diedit saat status masih menunggu.');
         }
 
-        // Validasi data
         $validatedData = $request->validate([
             'judul' => 'required|string|max:255',
             'isi' => 'required|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,heic,heif|max:2048',
+            'foto' => 'nullable|mimes:jpeg,png,jpg,heic,heif|max:10240',
         ]);
 
-        // Jika ada file foto baru diupload
+        $fotoPath = $pengaduan->foto;
+
         if ($request->hasFile('foto')) {
             // Hapus foto lama jika ada
             if ($pengaduan->foto) {
                 Storage::delete('public/foto_pengaduan/' . $pengaduan->foto);
             }
 
-            // Simpan foto baru
-            $foto = $request->file('foto');
-            $namaFoto = time() . '.' . $foto->getClientOriginalExtension();
-            $foto->storeAs('public/foto_pengaduan', $namaFoto);
+            $file = $request->file('foto');
+            $extension = strtolower($file->getClientOriginalExtension());
+            $filename = time() . '_' . Str::random(8) . '.jpg'; // Simpan sebagai JPG
+            $savePath = storage_path('app/public/foto_pengaduan/' . $filename);
 
-            // Update data pengaduan beserta foto
-            $pengaduan->update([
-                'judul' => $validatedData['judul'],
-                'isi' => $validatedData['isi'],
-                'foto' => $namaFoto,
-            ]);
-        } else {
-            // Update data tanpa mengubah foto
-            $pengaduan->update([
-                'judul' => $validatedData['judul'],
-                'isi' => $validatedData['isi'],
-            ]);
+            if (!file_exists(dirname($savePath))) {
+                mkdir(dirname($savePath), 0755, true);
+            }
+
+            try {
+                if (in_array($extension, ['heic', 'heif'])) {
+                    $tempFolder = storage_path('app/temp_upload');
+                    if (!file_exists($tempFolder)) {
+                        mkdir($tempFolder, 0755, true);
+                    }
+
+                    $tmpPath = $tempFolder . '/' . $file->getClientOriginalName();
+                    $file->move($tempFolder, $file->getClientOriginalName());
+
+                    $imagick = new \Imagick($tmpPath);
+                    $imagick->setImageFormat('jpg');
+                    $imagick->setImageCompression(\Imagick::COMPRESSION_JPEG);
+                    $imagick->setImageCompressionQuality(10); // Kompres kualitas
+                    $imagick->stripImage();
+                    $imagick->writeImage($savePath);
+                    $imagick->clear();
+                    $imagick->destroy();
+                    unlink($tmpPath);
+                } else {
+                    $imagick = new \Imagick();
+                    $imagick->readImage($file->getPathname());
+                    $imagick->setImageFormat('jpg');
+                    $imageSize = $file->getSize();
+
+                    if ($imageSize > 2 * 1024 * 1024) { // Kalau besar
+                        $imagick->setImageCompressionQuality(10);
+                    } else {
+                        $imagick->setImageCompressionQuality(30);
+                    }
+                    $imagick->stripImage();
+                    $imagick->writeImage($savePath);
+                    $imagick->clear();
+                    $imagick->destroy();
+                }
+
+                $fotoPath = $filename;
+            } catch (\Exception $e) {
+                \Log::error('Upload error saat update: ' . $e->getMessage());
+                return back()->withErrors(['foto' => 'Gagal memproses foto baru: ' . $e->getMessage()]);
+            }
         }
+
+        $pengaduan->update([
+            'judul' => $validatedData['judul'],
+            'isi' => $validatedData['isi'],
+            'foto' => $fotoPath,
+        ]);
 
         return redirect()->route('masyarakat.pengaduan.index')->with('success', 'Pengaduan berhasil diperbarui.');
     }
+
 
     /**
      * Remove the specified resource from storage.
