@@ -22,6 +22,10 @@
         </div>
 
         <div id="preview-container" style="margin-top: 10px; display: none;">
+            <div id="loading-spinner" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                </div>
+            </div>
             <img id="preview-image" src="#" alt="Preview Foto" style="max-width: 300px; border: 1px solid #ddd; padding: 5px;">
         </div>
 
@@ -40,12 +44,16 @@ function previewImage(event) {
     const file = event.target.files[0];
     const previewContainer = document.getElementById('preview-container');
     const preview = document.getElementById('preview-image');
-    const removeButton = document.getElementById('remove-preview');
+    const loadingSpinner = document.getElementById('loading-spinner');
 
     if (!file) {
         resetPreview();
         return;
     }
+
+    previewContainer.style.display = 'block';
+    loadingSpinner.style.display = 'block';
+    preview.style.display = 'none'; // Sembunyikan gambar dulu
 
     // Mendapatkan ekstensi file
     const fileExtension = file.name.split('.').pop().toLowerCase();
@@ -60,7 +68,8 @@ function previewImage(event) {
         .then(function(convertedBlob) {
             const url = URL.createObjectURL(convertedBlob);
             preview.src = url;
-            previewContainer.style.display = 'block';
+            loadingSpinner.style.display = 'none';
+            preview.style.display = 'block';
         })
         .catch(function(error) {
             console.error(error);
@@ -72,7 +81,8 @@ function previewImage(event) {
         const reader = new FileReader();
         reader.onload = function(e) {
             preview.src = e.target.result;
-            previewContainer.style.display = 'block';
+            loadingSpinner.style.display = 'none';
+            preview.style.display = 'block';
         }
         reader.readAsDataURL(file);
     } else {
@@ -85,9 +95,12 @@ function previewImage(event) {
 function resetPreview() {
     const previewContainer = document.getElementById('preview-container');
     const preview = document.getElementById('preview-image');
+    const loadingSpinner = document.getElementById('loading-spinner');
     const fileInput = document.getElementById('foto');
 
     preview.src = '#';
+    preview.style.display = 'none';
+    loadingSpinner.style.display = 'none';
     previewContainer.style.display = 'none';
     fileInput.value = ''; // Reset input file
 }
