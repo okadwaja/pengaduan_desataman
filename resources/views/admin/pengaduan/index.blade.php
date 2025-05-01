@@ -5,8 +5,8 @@
 <div class="container">
     <h2>Daftar Pengaduan</h2>
 
-    <table class="table table-bordered mt-3">
-        <thead>
+    <table class="table table-striped mt-3">
+        <thead style="background-color: #002d72; color: white;">
             <tr>
                 <th>Nama Pengirim</th>
                 <th>Judul</th>
