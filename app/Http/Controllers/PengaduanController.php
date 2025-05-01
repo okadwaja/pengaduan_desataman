@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 
 
@@ -20,6 +21,7 @@ class PengaduanController extends Controller
      */
     public function index()
 {
+    \Carbon\Carbon::setLocale('id');
     $user = auth()->user();
 
     if ($user->role === 'admin') {
