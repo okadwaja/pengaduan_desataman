@@ -9,6 +9,20 @@
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
+        <!-- NIK -->
+        <div class="mt-4">
+            <x-input-label for="nik" :value="__('NIK')" />
+            <x-text-input id="nik" class="block mt-1 w-full" type="text" name="nik" :value="old('nik')" required />
+            <x-input-error :messages="$errors->get('nik')" class="mt-2" />
+        </div>
+
+        <!-- No Telepon -->
+        <div class="mt-4">
+            <x-input-label for="no_telp" :value="__('No. Telepon')" />
+            <x-text-input id="no_telp" class="block mt-1 w-full" type="text" name="no_telp" :value="old('no_telp')" required />
+            <x-input-error :messages="$errors->get('no_telp')" class="mt-2" />
+        </div>
+
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
