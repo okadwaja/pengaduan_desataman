@@ -150,6 +150,7 @@ class PengaduanController extends Controller
      */
     public function show(string $id)
     {
+        \Carbon\Carbon::setLocale('id');
         $pengaduan = Pengaduan::with('user')->findOrFail($id);
         $user = auth()->user();
 
@@ -160,6 +161,7 @@ class PengaduanController extends Controller
 
         // Arahkan view berdasarkan role
         if ($user->role === 'admin') {
+            $pengaduan = Pengaduan::with('user')->findOrFail($id);
             return view('admin.pengaduan.show', compact('pengaduan'));
         }
 

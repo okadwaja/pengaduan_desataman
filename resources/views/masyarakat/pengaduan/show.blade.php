@@ -6,10 +6,10 @@
 
     <div class="card mt-3">
         <div class="card-body">
-            <h4>{{ $pengaduan->judul }}</h4>
-            <p>{{ $pengaduan->isi }}</p>
+            <h4>Judul: {{ $pengaduan->judul }}</h4>
+            <p>Isi: {{ $pengaduan->isi }}</p>
             <p>Status: <strong>{{ ucfirst($pengaduan->status) }}</strong></p>
-            <p>Tanggal: {{ $pengaduan->created_at->format('d M Y') }}</p>
+            <p>Tanggal: {{ $pengaduan->created_at->translatedFormat('d M Y H:i') }} WITA</p>
 
             @if ($pengaduan->foto)
                 <div class="mt-3">
