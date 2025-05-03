@@ -6,13 +6,12 @@ use Imagick;
 use Illuminate\Support\Str;
 use Spatie\ImageConverter\ImageConverter;
 use App\Models\Pengaduan;
+use App\Models\Tanggapan;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-
-
 
 class PengaduanController extends Controller
 {
@@ -127,7 +126,7 @@ class PengaduanController extends Controller
                 return back()->withErrors(['foto' => 'File foto gagal diproses.']);
             }
             
-            Pengaduan::create([
+            $pengaduan=Pengaduan::create([
                 'user_id' => auth()->user()->id,
                 'judul' => $request->judul,
                 'isi' => $request->isi,
@@ -299,5 +298,43 @@ class PengaduanController extends Controller
 
     // Redirect kembali dengan pesan sukses
     return redirect()->route('masyarakat.pengaduan.index')->with('success', 'Pengaduan berhasil dihapus.');
+    }
+
+        public function formTanggapi($id)
+    {
+        $pengaduan = Pengaduan::findOrFail($id);
+        return view('admin.tanggapan.form', compact('pengaduan'));
+    }
+
+    public function simpanTanggapan(Request $request, $id)
+    {
+        $request->validate([
+            'komentar' => 'required|string',
+            'status' => 'required|in:menunggu,diproses,selesai,ditolak',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,heic,heif|max:2048',
+        ]);
+
+        $pengaduan = Pengaduan::findOrFail($id);
+
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('foto_tanggapan', 'public');
+        }
+
+        // Update status pengaduan
+        $pengaduan->status = $request->status;
+        $pengaduan->save();
+
+        // Buat atau update tanggapan
+        $tanggapan = $pengaduan->tanggapan ?? new Tanggapan();
+        $tanggapan->pengaduan_id = $pengaduan->id;
+        $tanggapan->user_id = auth()->id(); // admin yang login
+        $tanggapan->komentar = $request->komentar;
+        if ($fotoPath) {
+            $tanggapan->foto = $fotoPath;
+        }
+        $tanggapan->save();
+
+        return redirect()->route('admin.pengaduan.index')->with('success', 'Tanggapan berhasil disimpan.');
     }
 }

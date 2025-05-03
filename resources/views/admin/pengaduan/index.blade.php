@@ -28,7 +28,7 @@
                         {{ $item->created_at->format('H:i') }} WITA
                     </td>
                         <td>
-                            <a href="#" class="btn btn-sm btn-primary">Tanggapi</a>
+                            <a href="{{ route('admin.pengaduan.formTanggapi', $item->id) }}" class="btn btn-sm btn-primary">Tanggapi</a>
                             <a href="{{ route('admin.pengaduan.show', $item->id) }}" class="btn btn-info btn-sm">Detail</a>
                         </td>
                 </tr>

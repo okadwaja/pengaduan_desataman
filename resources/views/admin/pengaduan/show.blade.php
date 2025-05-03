@@ -26,6 +26,33 @@
                     </div>
                 @endif
         </div>
+
+        @if($pengaduan->tanggapan)
+            <div class="card mt-4">
+                <div class="card-header">
+                    <strong>Tanggapan Admin</strong>
+                </div>
+                <div class="card-body">
+                    <p>{{ $pengaduan->tanggapan->komentar }}</p>
+
+                    @if($pengaduan->tanggapan->foto)
+                        <div class="mt-3">
+                            <img src="{{ asset('storage/foto_tanggapan/' . $pengaduan->tanggapan->foto) }}" alt="Foto Tanggapan" class="img-fluid" style="max-width: 400px;">
+                        </div>
+                    @endif
+
+                    <p class="text-muted mt-2">
+                        Ditanggapi oleh: {{ $pengaduan->tanggapan->user->name ?? 'Admin' }} <br>
+                        Pada: {{ \Carbon\Carbon::parse($pengaduan->tanggapan->created_at)->translatedFormat('H:i, d F Y') }}
+                    </p>
+                </div>
+            </div>
+        @else
+            <div class="alert alert-secondary mt-4">
+                Belum ada tanggapan dari admin.
+            </div>
+        @endif
+
     </div>
 
     <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary mt-3">Kembali</a>

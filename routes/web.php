@@ -33,6 +33,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Resource route lainnya (create, store, show, edit, update, destroy)
     Route::resource('pengaduan', PengaduanController::class)->except(['index']);
+
+    //tanggapan
+    Route::get('/pengaduan/{id}/tanggapi', [PengaduanController::class, 'formTanggapi'])->name('pengaduan.formTanggapi');
+    Route::post('/pengaduan/{id}/tanggapi', [PengaduanController::class, 'simpanTanggapan'])->name('pengaduan.simpanTanggapan');
 });
 
 
