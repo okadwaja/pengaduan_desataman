@@ -43,7 +43,7 @@
 
                     <p class="text-muted mt-2">
                         Ditanggapi oleh: {{ $pengaduan->tanggapan->user->name ?? 'Admin' }} <br>
-                        Pada: {{ \Carbon\Carbon::parse($pengaduan->tanggapan->created_at)->translatedFormat('H:i, d F Y') }}
+                        Pada: {{ \Carbon\Carbon::parse($pengaduan->tanggapan->updated_at)->translatedFormat('H:i, d F Y') }}
                     </p>
                 </div>
             </div>

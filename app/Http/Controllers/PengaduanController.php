@@ -12,6 +12,7 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class PengaduanController extends Controller
 {
@@ -105,7 +106,7 @@ class PengaduanController extends Controller
                         $imageSize = $file->getSize();
             
                         if ($imageSize > 2 * 1024 * 1024) { // lebih dari 2 MB
-                            $imagick->setImageCompressionQuality(10); // kompres kualitas 50%
+                            $imagick->setImageCompressionQuality(10); // kompres kualitas 10%
                         } else {
                             $imagick->setImageCompressionQuality(30);
                         }
@@ -306,35 +307,97 @@ class PengaduanController extends Controller
         return view('admin.tanggapan.form', compact('pengaduan'));
     }
 
+    // Action Tanggapan
     public function simpanTanggapan(Request $request, $id)
     {
+        \Log::info('Memasuki fungsi simpanTanggapan');
+
         $request->validate([
             'komentar' => 'required|string',
             'status' => 'required|in:menunggu,diproses,selesai,ditolak',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png,heic,heif|max:2048',
+            'foto' => 'nullable|file|mimes:jpg,jpeg,png,heic,heif|max:10240',
         ]);
 
         $pengaduan = Pengaduan::findOrFail($id);
-
         $fotoPath = null;
+
         if ($request->hasFile('foto')) {
-            $fotoPath = $request->file('foto')->store('foto_tanggapan', 'public');
+            \Log::info('hasFile() result: true');
+            $file = $request->file('foto');
+            \Log::info('Input file data: ' . json_encode(['foto' => $file]));
+
+            $extension = strtolower($file->getClientOriginalExtension());
+            \Log::info('Ekstensi file: ' . $extension);
+
+            $filename = time() . '_' . Str::random(8) . '.jpg';
+            $savePath = storage_path('app/public/foto_tanggapan/' . $filename);
+
+            if (!file_exists(dirname($savePath))) {
+                mkdir(dirname($savePath), 0755, true);
+            }
+
+            try {
+                if (in_array($extension, ['heic', 'heif'])) {
+                    \Log::info('File HEIC terdeteksi');
+
+                    $tempFolder = storage_path('app/temp_upload');
+                    if (!file_exists($tempFolder)) {
+                        mkdir($tempFolder, 0755, true);
+                    }
+
+                    $tmpPath = $tempFolder . '/' . uniqid() . '.' . $extension;
+                    $file->move($tempFolder, basename($tmpPath));
+
+                    \Log::info('File HEIC dipindahkan ke sementara: ' . $tmpPath);
+
+                    $imagick = new \Imagick($tmpPath);
+                    $imagick->setImageFormat('jpg');
+                    $imagick->setImageCompression(\Imagick::COMPRESSION_JPEG);
+                    $imagick->setImageCompressionQuality(10);
+                    $imagick->stripImage();
+                    $imagick->writeImage($savePath);
+                    $imagick->clear();
+                    $imagick->destroy();
+
+                    unlink($tmpPath);
+                    \Log::info('Konversi HEIC sukses');
+                } else {
+                    \Log::info('File selain HEIC, diproses langsung');
+
+                    $imagick = new \Imagick($file->getPathname());
+                    $imagick->setImageFormat('jpg');
+
+                    $imageSize = $file->getSize();
+                    $imagick->setImageCompressionQuality($imageSize > 2 * 1024 * 1024 ? 10 : 30);
+
+                    $imagick->stripImage();
+                    $imagick->writeImage($savePath);
+                    $imagick->clear();
+                    $imagick->destroy();
+                }
+
+                $fotoPath = $filename;
+            } catch (\Exception $e) {
+                \Log::error('Gagal upload foto tanggapan (HEIC/JPG): ' . $e->getMessage());
+                return back()->withErrors(['foto' => 'Upload gagal: ' . $e->getMessage()]);
+            }
         }
 
-        // Update status pengaduan
         $pengaduan->status = $request->status;
         $pengaduan->save();
 
-        // Buat atau update tanggapan
         $tanggapan = $pengaduan->tanggapan ?? new Tanggapan();
         $tanggapan->pengaduan_id = $pengaduan->id;
-        $tanggapan->user_id = auth()->id(); // admin yang login
+        $tanggapan->user_id = auth()->id();
         $tanggapan->komentar = $request->komentar;
         if ($fotoPath) {
             $tanggapan->foto = $fotoPath;
         }
         $tanggapan->save();
 
+        \Log::info('Tanggapan berhasil disimpan');
+
         return redirect()->route('admin.pengaduan.index')->with('success', 'Tanggapan berhasil disimpan.');
     }
+
 }
