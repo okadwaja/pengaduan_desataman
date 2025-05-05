@@ -35,8 +35,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('pengaduan', PengaduanController::class)->except(['index']);
 
     //tanggapan
-    Route::get('/pengaduan/{id}/tanggapi', [PengaduanController::class, 'formTanggapi'])->name('pengaduan.formTanggapi');
-    Route::post('/pengaduan/{id}/tanggapi', [PengaduanController::class, 'simpanTanggapan'])->name('pengaduan.simpanTanggapan');
+    Route::get('/pengaduan/{id}/tanggapan', [PengaduanController::class, 'createTanggapan'])->name('pengaduan.tanggapan.create');
+    Route::post('/pengaduan/{id}/tanggapan', [PengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan.store');
 });
 
 

@@ -28,7 +28,7 @@
                         {{ $item->created_at->format('H:i') }} WITA
                     </td>
                         <td>
-                            <a href="{{ route('admin.pengaduan.formTanggapi', $item->id) }}" class="btn btn-sm btn-primary">Tanggapi</a>
+                            <a href="{{ route('admin.pengaduan.tanggapan.create', $item->id) }}" class="btn btn-sm btn-primary">Tanggapi</a>
                             <a href="{{ route('admin.pengaduan.show', $item->id) }}" class="btn btn-info btn-sm">Detail</a>
                         </td>
                 </tr>
@@ -40,5 +40,17 @@
         </tbody>
     </table>
 </div>
+
+@if (session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    </script>
+@endif
 
 @endsection

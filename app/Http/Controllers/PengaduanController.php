@@ -151,7 +151,7 @@ class PengaduanController extends Controller
     public function show(string $id)
     {
         \Carbon\Carbon::setLocale('id');
-        $pengaduan = Pengaduan::with('user')->findOrFail($id);
+        $pengaduan = Pengaduan::with('user', 'tanggapan')->findOrFail($id);
         $user = auth()->user();
 
         // Cek jika masyarakat hanya boleh lihat miliknya sendiri
@@ -161,7 +161,7 @@ class PengaduanController extends Controller
 
         // Arahkan view berdasarkan role
         if ($user->role === 'admin') {
-            $pengaduan = Pengaduan::with('user')->findOrFail($id);
+            $pengaduan = Pengaduan::with('user', 'tanggapan')->findOrFail($id);
             return view('admin.pengaduan.show', compact('pengaduan'));
         }
 
@@ -294,6 +294,10 @@ class PengaduanController extends Controller
         return redirect()->back()->with('error', 'Anda tidak dapat menghapus pengaduan ini.');
     }
 
+    if ($pengaduan->status !== 'menunggu') {
+        return redirect()->back()->with('error', 'Pengaduan hanya bisa dihapus ketika belum ditanggapi.');
+    }
+
     // Hapus pengaduan
     $pengaduan->delete();
 
@@ -301,14 +305,17 @@ class PengaduanController extends Controller
     return redirect()->route('masyarakat.pengaduan.index')->with('success', 'Pengaduan berhasil dihapus.');
     }
 
-        public function formTanggapi($id)
+
+    // Action Buat Tanggapan
+        public function createTanggapan($id)
     {
         $pengaduan = Pengaduan::findOrFail($id);
-        return view('admin.tanggapan.form', compact('pengaduan'));
+        return view('admin.tanggapan.create', compact('pengaduan'));
     }
 
-    // Action Tanggapan
-    public function simpanTanggapan(Request $request, $id)
+
+    //Action Simpan Tanggapan
+    public function storeTanggapan(Request $request, $id)
     {
         \Log::info('Memasuki fungsi simpanTanggapan');
 

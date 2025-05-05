@@ -20,11 +20,12 @@
                 <li><strong>NIK:</strong> {{ $pengaduan->user->nik }}</li>
                 <li><strong>No. Telp:</strong> {{ $pengaduan->user->no_telp }}</li>
             </ul>
-                @if ($pengaduan->foto)
-                    <div class="mt-3">
-                        <img src="{{ asset('storage/foto_pengaduan/' . $pengaduan->foto) }}" alt="Foto Pengaduan" class="img-fluid" style="max-width: 400px;">
-                    </div>
-                @endif
+
+            @if ($pengaduan->foto)
+                <div class="mt-3">
+                    <img src="{{ asset('storage/foto_pengaduan/' . $pengaduan->foto) }}" alt="Foto Pengaduan" class="img-fluid" style="max-width: 400px;">
+                </div>
+            @endif
         </div>
 
         @if($pengaduan->tanggapan)
@@ -52,9 +53,14 @@
                 Belum ada tanggapan dari admin.
             </div>
         @endif
-
     </div>
 
-    <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary mt-3">Kembali</a>
+    <div class="mt-3">
+        <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary">Kembali</a>
+
+        @if(!$pengaduan->tanggapan)
+            <a href="{{ route('admin.pengaduan.tanggapan.create', $pengaduan->id) }}" class="btn btn-primary">Tanggapi</a>
+        @endif
+    </div>
 </div>
 @endsection

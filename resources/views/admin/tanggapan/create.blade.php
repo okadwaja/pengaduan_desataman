@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <form action="{{ route('admin.pengaduan.simpanTanggapan', $pengaduan->id) }}" method="POST" enctype="multipart/form-data" class="mt-3">
+    <form action="{{ route('admin.pengaduan.tanggapan.store', $pengaduan->id) }}" method="POST" enctype="multipart/form-data" class="mt-3">
         @csrf
 
         <div class="form-group mb-3">
