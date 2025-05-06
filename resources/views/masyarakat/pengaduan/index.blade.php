@@ -44,7 +44,21 @@
                 <tr>
                     <td>{{ $item->judul }}</td>
                     <td>{{ $item->isi }}</td>
-                    <td>{{ ucfirst($item->status) }}</td>
+                    @php
+                        $status = strtolower($item->status);
+                        $badgeClass = match($status) {
+                            'menunggu' => 'warning',
+                            'diproses' => 'primary',
+                            'selesai'  => 'success',
+                            'ditolak'  => 'danger',
+                            default    => 'secondary'
+                        };
+                    @endphp
+                    <td>
+                        <span class="badge bg-{{ $badgeClass }} text-white">
+                            {{ ucfirst($item->status) }}
+                        </span>
+                    </td>
                     <td>
                         {{ $item->created_at->translatedFormat('d M Y') }}<br>
                         {{ $item->created_at->format('H:i') }} WITA

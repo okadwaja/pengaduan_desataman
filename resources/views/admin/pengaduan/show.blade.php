@@ -58,9 +58,21 @@
     <div class="mt-3">
         <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary">Kembali</a>
 
-        @if(!$pengaduan->tanggapan)
-            <a href="{{ route('admin.pengaduan.tanggapan.create', $pengaduan->id) }}" class="btn btn-primary">Tanggapi</a>
+        @php
+            $status = strtolower($pengaduan->status);
+            $isEditable = in_array($status, ['menunggu', 'diproses']);
+        @endphp
+
+        @if($isEditable)
+            <a href="{{ route('admin.pengaduan.tanggapan.create', $pengaduan->id) }}" class="btn btn-primary">
+                {{ $status === 'menunggu' ? 'Tanggapi' : 'Update Tanggapan' }}
+            </a>
+        @else
+            <button class="btn btn-secondary" disabled>
+                Update Tanggapan
+            </button>
         @endif
+
     </div>
 </div>
 @endsection
