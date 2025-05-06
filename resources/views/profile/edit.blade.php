@@ -1,29 +1,51 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
-            </div>
+@section('content')
+<div class="container">
+    <h1>Profil Saya</h1>
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
-            </div>
-        </div>
+    {{-- Tampilkan foto profil --}}
+    <div class="mb-4">
+        <img src="{{ asset($user->foto) }}" alt="Foto Profil" width="150">
     </div>
-</x-app-layout>
+
+    {{-- Form update --}}
+    <form method="POST" action="{{ route('profile.update') }}">
+        @csrf
+        @method('PATCH')
+
+        {{-- Nama --}}
+        <div class="mb-3">
+            <label for="name" class="form-label">Nama</label>
+            <input type="text" id="name" name="name" class="form-control"
+                   value="{{ old('name', $user->name) }}" required autofocus>
+        </div>
+
+        {{-- Email --}}
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-control"
+                   value="{{ old('email', $user->email) }}" required>
+        </div>
+
+        {{-- Alamat --}}
+        <div class="mb-3">
+            <label for="alamat" class="form-label">Alamat</label>
+            <select id="alamat" name="alamat" class="form-select">
+                @foreach([
+                    'Br. Batubayan', 'Br. Dlodpasar', 'Br. Gunung', 'Br. Jempeng',
+                    'Br. Jempeng Kauh', 'Br. Ketogan', 'Br. Mambul', 'Br. Pegongan',
+                    'Br. Raketan', 'Br. Sukajati', 'Br. Tabah', 'Br. Tebejero'
+                ] as $alamat)
+                    <option value="{{ $alamat }}" {{ $user->alamat == $alamat ? 'selected' : '' }}>
+                        {{ $alamat }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        {{-- Tombol simpan --}}
+        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+    </form>
+</div>
+@endsection

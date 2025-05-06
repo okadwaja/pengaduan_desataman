@@ -29,6 +29,7 @@
                         @method('DELETE')
                         <button class="btn btn-danger btn-sm">Hapus</button>
                     </form>
+                    <a href="{{ route('admin.user.show', $user->id) }}" class="btn btn-sm btn-info">View Detail</a>
                 </td>
             </tr>
             @endforeach

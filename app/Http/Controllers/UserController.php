@@ -23,4 +23,11 @@ public function destroy($id)
     return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
 }
 
+public function show($id)
+{
+    $user = User::findOrFail($id);
+    return view('admin.users.show', compact('user'));
+}
+
+
 }
