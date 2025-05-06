@@ -16,6 +16,7 @@
             <h5>Data Pengadu:</h5>
             <ul>
                 <li><strong>Nama:</strong> {{ $pengaduan->user->name }}</li>
+                <li><strong>Alamat:</strong> {{ $pengaduan->user->alamat }}</li>
                 <li><strong>Email:</strong> {{ $pengaduan->user->email }}</li>
                 <li><strong>NIK:</strong> {{ $pengaduan->user->nik }}</li>
                 <li><strong>No. Telp:</strong> {{ $pengaduan->user->no_telp }}</li>
