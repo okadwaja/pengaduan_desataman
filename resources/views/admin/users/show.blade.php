@@ -12,7 +12,7 @@
             <p><strong>Alamat:</strong> {{ $user->alamat }}</p>
             <p><strong>Email:</strong> {{ $user->email }}</p>
             <p><strong>Foto Profil:</strong></p>
-            <img src="{{ asset($user->foto) }}" alt="Foto Profil" width="150">
+            <img src="{{ asset('storage/foto_profil/' . $user->foto) }}" alt="Foto Profil" width="150">
         </div>
     </div>
 

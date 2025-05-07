@@ -25,6 +25,10 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'alamat' => ['required', 'string', 'max:255'],
+            'nik' => ['required', 'string', 'max:20'],
+            'no_telp' => ['required', 'string', 'max:20'],
+            'foto' => ['nullable', 'image', 'max:5048'], // max 5MB
         ];
     }
 }

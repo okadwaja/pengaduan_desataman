@@ -6,10 +6,7 @@
 
     {{-- Tampilkan foto profil --}}
     <div class="mb-4">
-        <img src="{{ asset($user->foto) }}" alt="Foto Profil" width="150">
-    </div>
-    <div class="mb-3">
-        <input type="file" id="foto" name="foto" class="form-control">
+        <img src="{{ asset('storage/foto_profil/' . $user->foto) }}" alt="Foto Profil" width="150">
     </div>
 
     {{-- Form update --}}
@@ -17,6 +14,11 @@
         @csrf
         @method('PATCH')
 
+        {{-- Upload foto baru --}}
+        <div class="mb-3">
+            <label for="foto" class="form-label">Upload Foto Baru</label>
+            <input type="file" id="foto" name="foto" class="form-control">
+        </div>
         {{-- Nama --}}
         <div class="mb-3">
             <label for="name" class="form-label">Nama</label>
