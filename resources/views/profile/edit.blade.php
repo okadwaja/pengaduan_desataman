@@ -8,24 +8,31 @@
     <div class="mb-4">
         <img src="{{ asset($user->foto) }}" alt="Foto Profil" width="150">
     </div>
+    <div class="mb-3">
+        <input type="file" id="foto" name="foto" class="form-control">
+    </div>
 
     {{-- Form update --}}
-    <form method="POST" action="{{ route('profile.update') }}">
+    <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
         @csrf
         @method('PATCH')
 
         {{-- Nama --}}
         <div class="mb-3">
             <label for="name" class="form-label">Nama</label>
-            <input type="text" id="name" name="name" class="form-control"
-                   value="{{ old('name', $user->name) }}" required autofocus>
+            <input type="text" id="name" name="name" class="form-control" value="{{ old('name', $user->name) }}" required autofocus>
         </div>
 
-        {{-- Email --}}
+        {{-- NIK --}}
         <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" name="email" class="form-control"
-                   value="{{ old('email', $user->email) }}" required>
+            <label for="nik" class="form-label">NIK</label>
+            <input type="text" id="nik" name="nik" class="form-control" value="{{ old('nik', $user->nik) }}" required>
+        </div>
+
+        {{-- No Telepon --}}
+        <div class="mb-3">
+            <label for="no_telp" class="form-label">No Telepon</label>
+            <input type="text" id="no_telp" name="no_telp" class="form-control" value="{{ old('no_telp', $user->no_telp) }}" required>
         </div>
 
         {{-- Alamat --}}
@@ -42,6 +49,12 @@
                     </option>
                 @endforeach
             </select>
+        </div>
+
+        {{-- Email --}}
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
         </div>
 
         {{-- Tombol simpan --}}
