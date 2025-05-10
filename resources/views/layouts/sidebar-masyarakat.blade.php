@@ -1,14 +1,13 @@
 <!-- Sidebar -->
 <div id="wrapper">
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-main sidebar sidebar-dark accordion" id="accordionSidebar">
 
         <!-- Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('masyarakat.dashboard') }}">
-            <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fas fa-laugh-wink"></i>
-            </div>
-            <div class="sidebar-brand-text mx-3">Admin</div>
-        </a>
+        <!-- Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
+        <img
+            src="{{ asset('storage/foto_profil/logo.png') }}">
+    </a>
 
         <!-- Divider -->
         <hr class="sidebar-divider my-0">
@@ -16,8 +15,15 @@
         <!-- Menu Dashboard -->
         <li class="nav-item">
             <a class="nav-link" href="{{ route('masyarakat.dashboard') }}">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <i class="fas fa-fw fa-home"></i>
                 <span>Dashboard</span></a>
+        </li>
+
+        <!-- Input Pengaduan -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('masyarakat.pengaduan.create') }}">
+                <i class="fas fa-fw fa-pen"></i>
+                <span>Insert Pengaduan</span></a>
         </li>
 
         <!-- Menu Pengaduan -->

@@ -3,10 +3,8 @@
 
     <!-- Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
-        </div>
-        <div class="sidebar-brand-text mx-3">Admin</div>
+        <img
+            src="{{ asset('storage/foto_profil/logo.png') }}">
     </a>
 
     <!-- Divider -->
@@ -15,7 +13,7 @@
     <!-- Menu Dashboard -->
     <li class="nav-item">
         <a class="nav-link" href="{{ route('admin.dashboard') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-home"></i>
             <span>Dashboard</span></a>
     </li>
 
@@ -24,6 +22,13 @@
         <a class="nav-link" href="{{ route('admin.pengaduan.index') }}">
             <i class="fas fa-fw fa-inbox"></i>
             <span>Data Pengaduan</span></a>
+    </li>
+
+    <!-- Menu Users -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.users.index') }}">
+            <i class="fas fa-fw fa-user"></i>
+            <span>Data Users</span></a>
     </li>
 
     <!-- Logout -->

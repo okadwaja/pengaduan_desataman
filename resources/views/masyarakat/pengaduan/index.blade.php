@@ -25,9 +25,10 @@
 @endif
 
 <div class="container">
+    <div class="mb-3">
     <h2>Daftar Pengaduan Anda</h2>
-
-    <a href="{{ route('masyarakat.pengaduan.create') }}" class="btn btn-success mb-3">Buat Pengaduan Baru</a>
+    </div>
+    <a href="{{ route('masyarakat.pengaduan.create') }}" class="btn btn-main mb-3">Buat Pengaduan Baru</a>
 
     <div class="table-responsive">
     <table class="table table-bordered">
