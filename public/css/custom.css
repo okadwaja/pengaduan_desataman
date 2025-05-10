@@ -1,0 +1,17 @@
+.bg-main {
+    background-color: #113974 !important;
+    color: white;
+}
+
+.text-main {
+    color: #113974 !important;
+}
+
+.btn-main {
+    background-color: #113974 !important;
+    color: white !important;
+}
+
+.btn-main:hover {
+    background-color: #113974 !important;
+}

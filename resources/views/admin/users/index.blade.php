@@ -9,7 +9,7 @@
     @endif
 
     <table class="table table-striped mt-3">
-        <thead style="background-color: #002d72; color: white;">
+        <thead class="bg-main">
             <tr>
                 <th>Nama</th>
                 <th>NIK</th>
@@ -33,9 +33,10 @@
                         <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus user ini?');" class="m-0">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                            <button type="submit" class="btn btn-danger btn-sm ms-2">Hapus</button>
                         </form>
                     </div>
+
                 </td>
             </tr>
             @endforeach

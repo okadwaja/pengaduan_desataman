@@ -7,7 +7,7 @@
 
     <div class="table-responsive">
     <table class="table table-striped mt-3">
-        <thead style="background-color: #002d72; color: white;">
+        <thead class="bg-main">
             <tr>
                 <th>Nama Pengirim</th>
                 <th>Judul</th>
@@ -51,9 +51,9 @@
                         @endphp
 
                         @if($disableTombol)
-                            <button class="btn btn-sm btn-secondary" disabled>Tanggapi</button>
+                            <button class="btn btn-sm btn-secondary mb-2" disabled>Tanggapi</button>
                         @else
-                            <a href="{{ route('admin.pengaduan.tanggapan.create', $item->id) }}" class="btn btn-sm btn-primary">Tanggapi</a>
+                            <a href="{{ route('admin.pengaduan.tanggapan.create', $item->id) }}" class="btn btn-sm btn-primary mb-2">Tanggapi</a>
                         @endif
 
                             <a href="{{ route('admin.pengaduan.show', $item->id) }}" class="btn btn-info btn-sm">Detail</a>
