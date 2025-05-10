@@ -5,6 +5,7 @@
 <div class="container">
     <h2>Daftar Pengaduan</h2>
 
+    <div class="table-responsive">
     <table class="table table-striped mt-3">
         <thead style="background-color: #002d72; color: white;">
             <tr>
@@ -65,6 +66,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
 </div>
 
 @if (session('success'))

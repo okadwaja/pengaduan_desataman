@@ -29,6 +29,7 @@
 
     <a href="{{ route('masyarakat.pengaduan.create') }}" class="btn btn-success mb-3">Buat Pengaduan Baru</a>
 
+    <div class="table-responsive">
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -102,5 +103,6 @@
 
         </tbody>
     </table>
+    </div>
 </div>
 @endsection
