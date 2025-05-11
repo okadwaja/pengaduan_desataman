@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>Profil Saya</h1>
+    <h1 class="text-main">Profil Saya</h1>
 
     {{-- Tampilkan foto profil --}}
     <div class="mb-4">

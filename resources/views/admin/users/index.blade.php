@@ -8,6 +8,7 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+    <div class="table-responsive">
     <table class="table table-striped mt-3">
         <thead class="bg-main">
             <tr>
@@ -42,5 +43,6 @@
             @endforeach
         </tbody>
     </table>
+</div>
 </div>
 @endsection
