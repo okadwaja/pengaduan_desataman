@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ProfileController extends Controller
 {
@@ -28,20 +30,32 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        // Handle upload foto jika ada
-        if ($request->hasFile('foto')) {
-            $file = $request->file('foto');
-            $filename = time() . '_' . $file->getClientOriginalName();
-
-            // Simpan ke storage/app/public/foto_profile/
-            $path = $file->storeAs('foto_profil', $filename, 'public');
-
-            // Hapus foto lama jika ada
+        // Hapus foto lama jika akan diganti
+        if ($request->filled('cropped_image')) {
+            // Hapus foto lama
             if ($user->foto && \Storage::disk('public')->exists('foto_profil/' . $user->foto)) {
                 \Storage::disk('public')->delete('foto_profil/' . $user->foto);
             }
 
-            // Simpan path ke database
+            // Simpan foto baru dari base64
+            $base64Image = $request->input('cropped_image');
+            $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+            $image = $manager->read($base64Image)->toJpeg(80);
+            $filename = 'foto_' . time() . '.jpg';
+            \Storage::disk('public')->put("foto_profil/{$filename}", $image);
+            $user->foto = $filename;
+        }
+
+        // Kalau tidak ada cropped_image tapi user upload langsung
+        elseif ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('foto_profil', $filename, 'public');
+
+            if ($user->foto && \Storage::disk('public')->exists('foto_profil/' . $user->foto)) {
+                \Storage::disk('public')->delete('foto_profil/' . $user->foto);
+            }
+
             $user->foto = $filename;
         }
 

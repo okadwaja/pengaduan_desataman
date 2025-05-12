@@ -14,11 +14,41 @@
         @csrf
         @method('PATCH')
 
+        <!-- Modal Crop -->
+        <div id="crop-modal" class="modal" tabindex="-1" style="display:none; position:fixed; z-index:1050; background-color:rgba(0,0,0,0.6); top:0; left:0; width:100%; height:100%;">
+        <div style="background:white; margin:5% auto; padding:20px; width:90%; max-width:500px;">
+            <h5>Crop Foto</h5>
+            <div>
+                <img id="image-to-crop" style="max-width: 100%;">
+            </div>
+            <div class="mt-2 text-end">
+                <button id="crop-cancel" class="btn btn-secondary btn-sm">Batal</button>
+                <button id="crop-confirm" class="btn btn-primary btn-sm">Oke</button>
+            </div>
+        </div>
+        </div>
+
+
         {{-- Upload foto baru --}}
         <div class="mb-3">
             <label for="foto" class="form-label">Upload Foto Baru</label>
-            <input type="file" id="foto" name="foto" class="form-control">
+            <input type="file" id="foto" name="foto" class="form-control" accept="image/*,.heic,.heif" onchange="handleFile(event)">
         </div>
+
+        {{-- Preview Foto --}}
+        <div id="preview-container" style="margin-top: 10px; display: none;">
+            <div id="loading-spinner" style="display: none;">
+                <div class="spinner-border text-primary" role="status"></div>
+            </div>
+            <img id="preview-image" src="#" alt="Preview Foto" style="max-width: 300px; border: 1px solid #ddd; padding: 5px;">
+            <br>
+            <button type="button" class="btn btn-sm btn-danger mt-2" id="remove-preview">Hapus Preview</button>
+        </div>
+
+        <!-- Hidden Canvas dan input untuk menyimpan hasil crop -->
+        <canvas id="canvas-crop" style="display: none;"></canvas>
+        <input type="hidden" name="cropped_image" id="cropped_image">
+
         {{-- Nama --}}
         <div class="form-group mb-3">
             <label for="name" class="form-label">Nama</label>
@@ -60,7 +90,98 @@
         </div>
 
         {{-- Tombol simpan --}}
+        <div class="mb-4">
+        @if (auth()->user()->role === 'admin')
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">Kembali</a>
+        @else
+            <a href="{{ route('masyarakat.dashboard') }}" class="btn btn-secondary">Kembali</a>
+        @endif
         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        </div>
+        
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
+<!-- Cropper.js CSS -->
+<link href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet">
+<!-- Cropper.js JS -->
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
+
+
+<script>
+let cropper;
+
+function handleFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const fileExt = file.name.split('.').pop().toLowerCase();
+    const modal = document.getElementById('crop-modal');
+    const imageElement = document.getElementById('image-to-crop');
+
+    const showCropModal = (src) => {
+        imageElement.src = src;
+        modal.style.display = 'block';
+        cropper = new Cropper(imageElement, {
+            aspectRatio: 1, // Square crop, bisa disesuaikan
+            viewMode: 1
+        });
+    };
+
+    if (fileExt === 'heic' || fileExt === 'heif') {
+        heic2any({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.8
+        })
+        .then(function(convertedBlob) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                showCropModal(e.target.result);
+            };
+            reader.readAsDataURL(convertedBlob);
+        })
+        .catch(() => alert("Gagal mengkonversi HEIC"));
+    } else if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            showCropModal(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        alert("File tidak didukung");
+        event.target.value = '';
+    }
+}
+
+document.getElementById('crop-cancel').addEventListener('click', () => {
+    cropper.destroy();
+    document.getElementById('crop-modal').style.display = 'none';
+    document.getElementById('foto').value = '';
+});
+
+document.getElementById('crop-confirm').addEventListener('click', () => {
+    const canvas = cropper.getCroppedCanvas({
+        width: 400,
+        height: 400
+    });
+
+    const croppedData = canvas.toDataURL("image/jpeg", 0.8);
+
+    // Preview
+    document.getElementById('preview-image').src = croppedData;
+    document.getElementById('preview-container').style.display = 'block';
+
+    // Simpan ke input hidden
+    document.getElementById('cropped_image').value = croppedData;
+
+    cropper.destroy();
+    document.getElementById('crop-modal').style.display = 'none';
+});
+</script>
+
+@endpush
+
