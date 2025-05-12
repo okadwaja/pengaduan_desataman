@@ -34,6 +34,7 @@
     <table class="table table-bordered">
         <thead>
             <tr>
+                <th>No.</td>
                 <th>Judul</th>
                 <th>Isi</th>
                 <th>Status</th>
@@ -44,6 +45,7 @@
         <tbody>
             @forelse ($pengaduan as $item)
                 <tr>
+                    <td>{{ $loop->iteration }}</td>
                     <td>{{ $item->judul }}</td>
                     <td>{{ $item->isi }}</td>
                     @php

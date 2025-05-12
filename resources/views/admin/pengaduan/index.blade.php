@@ -9,6 +9,7 @@
     <table class="table table-striped mt-3">
         <thead class="bg-main">
             <tr>
+                <th>No.</td>
                 <th>Nama Pengirim</th>
                 <th>Judul</th>
                 <th>Isi</th>
@@ -20,6 +21,7 @@
         <tbody>
             @forelse ($pengaduan as $item)
                 <tr>
+                    <td>{{ $loop->iteration }}</td>
                     <td>{{ $item->user->name }}</td>
                     <td>{{ $item->judul }}</td>
                     <td>{{ $item->isi }}</td>
@@ -61,7 +63,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6">Belum ada pengaduan.</td>
+                    <td colspan="7">Belum ada pengaduan.</td>
                 </tr>
             @endforelse
         </tbody>

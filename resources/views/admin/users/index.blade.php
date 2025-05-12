@@ -12,6 +12,7 @@
     <table class="table table-striped mt-3">
         <thead class="bg-main">
             <tr>
+                <th>No.</td>
                 <th>Nama</th>
                 <th>NIK</th>
                 <th>No Telp</th>
@@ -23,6 +24,7 @@
         <tbody>
             @foreach($users as $user)
             <tr>
+                <td>{{ $loop->iteration }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->nik }}</td>
                 <td>{{ $user->no_telp }}</td>
