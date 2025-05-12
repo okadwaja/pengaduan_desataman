@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="container">
-    <h1 class="text-main">DAFTAR PENGADUAN</h1>
+    <h1 class="text-main">Data Pengaduan</h1>
 
     <div class="table-responsive">
     <table class="table table-striped mt-3">

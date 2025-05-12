@@ -1,60 +1,124 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h2>Detail Pengaduan</h2>
+<div class="container text-main">
+    <h1 class="text-main">Detail Pengaduan</h1>
 
-    <div class="card mt-3">
-        <div class="card-body">
-            <h4>Judul: {{ $pengaduan->judul }}</h4>
-            <p>Isi: {{ $pengaduan->isi }}</p>
-            <p>Status: <strong>{{ ucfirst($pengaduan->status) }}</strong></p>
-            <p>Tanggal: {{ $pengaduan->created_at->translatedFormat('d M Y H:i') }} WITA</p>
-            <br>
-
-            <hr>
-            <h5>Data Pengadu:</h5>
-            <ul>
-                <li><strong>Nama:</strong> {{ $pengaduan->user->name }}</li>
-                <li><strong>Alamat:</strong> {{ $pengaduan->user->alamat }}</li>
-                <li><strong>Email:</strong> {{ $pengaduan->user->email }}</li>
-                <li><strong>NIK:</strong> {{ $pengaduan->user->nik }}</li>
-                <li><strong>No. Telp:</strong> {{ $pengaduan->user->no_telp }}</li>
-            </ul>
-
+{{-- Card Pengaduan --}}
+<div class="card mt-3 border-top-main">
+    <div class="card-body">
+        <div class="row">
+            {{-- Foto Pengaduan --}}
             @if ($pengaduan->foto)
-                <div class="mt-3">
-                    <img src="{{ asset('storage/foto_pengaduan/' . $pengaduan->foto) }}" alt="Foto Pengaduan" class="img-fluid" style="max-width: 400px;">
+                <div class="col-md-4 mb-3">
+                    <img src="{{ asset('storage/foto_pengaduan/' . $pengaduan->foto) }}" alt="Foto Pengaduan" class="img-fluid rounded shadow-sm" style="max-width: 100%;">
                 </div>
             @endif
+
+            {{-- Data --}}
+            <div class="col-md-8">
+
+                <div class="row mb-2">
+                    <div class="col-sm-3 fw-semibold"><strong>Judul</strong></div>
+                    <div class="col-sm-9">: {{ $pengaduan->judul }}</div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-sm-3 fw-semibold"><strong>Isi</strong></div>
+                    <div class="col-sm-9">: {{ $pengaduan->isi }}</div>
+                </div>
+
+                @php
+                    $status = strtolower($pengaduan->status);
+                    $badgeClass = match($status) {
+                        'menunggu' => 'warning',
+                        'diproses' => 'primary',
+                        'selesai'  => 'success',
+                        'ditolak'  => 'danger',
+                        default    => 'secondary'
+                    };
+                @endphp
+
+                <div class="row mb-2">
+                    <div class="col-sm-3 fw-semibold"><strong>Status</strong></div>
+                    <div class="col-sm-9">: <span class="badge bg-{{ $badgeClass }} text-white">{{ ucfirst($pengaduan->status) }}</span></div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-semibold"><strong>Waktu</strong></div>
+                    <div class="col-sm-9">: {{ $pengaduan->created_at->translatedFormat('d M Y H:i') }} WITA</div>
+                </div>
+
+                <br>
+
+                <div class="row mb-2">
+                    <div class="col-sm-3 fw-semibold"><strong>Data Pengadu:</strong></div>
+                </div>
+
+                @php $user = $pengaduan->user; @endphp
+                <div class="row mb-2">
+                    <div class="col-sm-3 fw-semibold"><strong>Nama</strong></div>
+                    <div class="col-sm-9">: {{ $user->name }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-3 fw-semibold"><strong>Alamat</strong></div>
+                    <div class="col-sm-9">: {{ $user->alamat }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-3 fw-semibold"><strong>Email</strong></div>
+                    <div class="col-sm-9">: {{ $user->email }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-3 fw-semibold"><strong>NIK</strong></div>
+                    <div class="col-sm-9">: {{ $user->nik }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 fw-semibold"><strong>No. Telp</strong></div>
+                    <div class="col-sm-9">: {{ $user->no_telp }}</div>
+                </div>
+            </div>
         </div>
-
-        @if($pengaduan->tanggapan)
-            <div class="card mt-4">
-                <div class="card-header">
-                    <strong>Tanggapan Admin</strong>
-                </div>
-                <div class="card-body">
-                    <p>{{ $pengaduan->tanggapan->komentar }}</p>
-
-                    @if($pengaduan->tanggapan->foto)
-                        <div class="mt-3">
-                            <img src="{{ asset('storage/foto_tanggapan/' . $pengaduan->tanggapan->foto) }}" alt="Foto Tanggapan" class="img-fluid" style="max-width: 400px;">
-                        </div>
-                    @endif
-
-                    <p class="text-muted mt-2">
-                        Ditanggapi oleh: {{ $pengaduan->tanggapan->user->name ?? 'Admin' }} <br>
-                        Pada: {{ \Carbon\Carbon::parse($pengaduan->tanggapan->updated_at)->translatedFormat('H:i, d F Y') }}
-                    </p>
-                </div>
-            </div>
-        @else
-            <div class="alert alert-secondary mt-4">
-                Belum ada tanggapan dari admin.
-            </div>
-        @endif
     </div>
+</div>
+
+{{-- Card Tanggapan --}}
+<h1 class="text-main mt-4">Tanggapan</h1>
+@if($pengaduan->tanggapan)
+    <div class="card mt-4 border-top-main">
+        <div class="card-body">
+            <div class="row">
+                {{-- Foto Tanggapan --}}
+                @if($pengaduan->tanggapan->foto)
+                    <div class="col-md-4 mb-3">
+                        <img src="{{ asset('storage/foto_tanggapan/' . $pengaduan->tanggapan->foto) }}" alt="Foto Tanggapan" class="img-fluid rounded shadow-sm" style="max-width: 100%;">
+                    </div>
+                @endif
+
+                {{-- Komentar dan Info --}}
+                <div class="col-md-8">
+                    <div class="row mb-2">
+                        <div class="col-sm-3 fw-semibold"><strong>Komentar</strong></div>
+                        <div class="col-sm-9">: {{ $pengaduan->tanggapan->komentar }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-3 fw-semibold"><strong>Ditanggapi Oleh</strong></div>
+                        <div class="col-sm-9">: {{ $pengaduan->tanggapan->user->name ?? 'Admin' }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3 fw-semibold"><strong>Waktu</strong></div>
+                        <div class="col-sm-9">: {{ \Carbon\Carbon::parse($pengaduan->tanggapan->updated_at)->translatedFormat('d M Y H:i') }} WITA</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@else
+    <div class="card mt-4 border-top-main">
+        <div class="card-body">
+            <i>Belum ada tanggapan dari admin.</i>
+        </div>
+    </div>
+@endif
 
     <div class="mt-3">
         <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary">Kembali</a>

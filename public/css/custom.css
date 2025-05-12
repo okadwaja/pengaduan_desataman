@@ -15,3 +15,14 @@
 .btn-main:hover {
     background-color: #113974 !important;
 }
+
+.border-bottom-main {
+    border-bottom: 0.25rem solid #113974 !important;
+}
+
+.border-left-main {
+    border-left: 0.25rem solid #113974 !important;
+}
+.border-top-main {
+    border-top: 0.25rem solid #113974 !important;
+}
