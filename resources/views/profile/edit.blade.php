@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h1 class="text-main">Profil Saya</h1>
+<div class="container text-main">
+    <h1 class="text-main mb-4">Profil Saya</h1>
 
     {{-- Tampilkan foto profil --}}
     <div class="mb-4">
@@ -20,25 +20,25 @@
             <input type="file" id="foto" name="foto" class="form-control">
         </div>
         {{-- Nama --}}
-        <div class="mb-3">
+        <div class="form-group mb-3">
             <label for="name" class="form-label">Nama</label>
             <input type="text" id="name" name="name" class="form-control" value="{{ old('name', $user->name) }}" required autofocus>
         </div>
 
         {{-- NIK --}}
-        <div class="mb-3">
+        <div class="form-group mb-3">
             <label for="nik" class="form-label">NIK</label>
             <input type="text" id="nik" name="nik" class="form-control" value="{{ old('nik', $user->nik) }}" required>
         </div>
 
         {{-- No Telepon --}}
-        <div class="mb-3">
+        <div class="form-group mb-3">
             <label for="no_telp" class="form-label">No Telepon</label>
             <input type="text" id="no_telp" name="no_telp" class="form-control" value="{{ old('no_telp', $user->no_telp) }}" required>
         </div>
 
         {{-- Alamat --}}
-        <div class="mb-3">
+        <div class="form-group mb-3">
             <label for="alamat" class="form-label">Alamat</label>
             <select id="alamat" name="alamat" class="form-select">
                 @foreach([
@@ -54,7 +54,7 @@
         </div>
 
         {{-- Email --}}
-        <div class="mb-3">
+        <div class="form-group mb-3">
             <label for="email" class="form-label">Email</label>
             <input type="email" id="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
         </div>

@@ -42,7 +42,7 @@ class ProfileController extends Controller
             }
 
             // Simpan path ke database
-            $user->foto = $path;
+            $user->foto = $filename;
         }
 
         // Simpan data lainnya
