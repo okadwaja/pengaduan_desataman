@@ -25,6 +25,7 @@ class User extends Authenticatable
         'nik',
         'no_telp',
         'alamat',
+        'foto',
     ];
 
     /**

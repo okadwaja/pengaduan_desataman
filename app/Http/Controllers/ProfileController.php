@@ -28,10 +28,12 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+
         $user = $request->user();
 
         // Hapus foto lama jika akan diganti
         if ($request->filled('cropped_image')) {
+
             // Hapus foto lama
             if ($user->foto && $user->foto !== 'default.png' && \Storage::disk('public')->exists('foto_profil/' . $user->foto)) {
                 \Storage::disk('public')->delete('foto_profil/' . $user->foto);
@@ -39,12 +41,34 @@ class ProfileController extends Controller
 
             // Simpan foto baru dari base64
             $base64Image = $request->input('cropped_image');
-            $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
-            $image = $manager->read($base64Image)->toJpeg(80);
-            $filename = 'foto_' . time() . '.jpg';
-            \Storage::disk('public')->put("foto_profil/{$filename}", $image);
-            $user->foto = $filename;
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64Image)) {
+                $base64Image = substr($base64Image, strpos($base64Image, ',') + 1);
+                $base64Image = base64_decode($base64Image);
+
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read($base64Image)->toJpeg(80);
+                $filename = 'foto_' . time() . '.jpg';
+
+                \Storage::disk('public')->put("foto_profil/{$filename}", $image);
+                $user->foto = $filename;
+            } else {
+                return back()->with('error', 'Gagal membaca gambar hasil crop.');
+            }
         }
+
+    // hanya proses file jika *tidak* ada cropped_image
+    elseif (!$request->filled('cropped_image') && $request->hasFile('foto')) {
+        $file = $request->file('foto');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $path = $file->storeAs('foto_profil', $filename, 'public');
+
+        if ($user->foto && \Storage::disk('public')->exists('foto_profil/' . $user->foto)) {
+            \Storage::disk('public')->delete('foto_profil/' . $user->foto);
+        }
+
+        $user->foto = $filename;
+    }
+
 
         // Kalau tidak ada cropped_image tapi user upload langsung
         elseif ($request->hasFile('foto')) {
@@ -60,7 +84,10 @@ class ProfileController extends Controller
         }
 
         // Simpan data lainnya
-        $user->fill($request->validated());
+        // Ambil semua data validasi, tapi kecualikan field 'foto'
+        $data = $request->except('foto', 'cropped_image');
+        $user->fill($data);
+
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
