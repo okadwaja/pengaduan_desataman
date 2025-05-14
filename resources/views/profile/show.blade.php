@@ -1,8 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
+
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#d33'
+            });
+        </script>
+    @endif
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#3085d6'
+            });
+        </script>
+    @endif
+
 <div class="container text-main">
-    <h1 class="text-main mb-4 text-center">Detail Pengguna</h1>
+    <h1 class="text-main mb-4 text-center">Profil Saya</h1>
 
     <div class="row justify-content-center">
         <div class="col-md-6 mb-4">
@@ -32,7 +55,13 @@
             </ul>
 
             <div class="d-flex justify-content-between">
-                <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Kembali</a>
+                @if (auth()->user()->role === 'admin')
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">Kembali</a>
+                @else
+                    <a href="{{ route('masyarakat.dashboard') }}" class="btn btn-secondary">Kembali</a>
+                @endif
+
+                <a href="{{ route('profile.edit') }}" class="btn btn-primary">Edit Profil</a>
             </div>
         </div>
     </div>

@@ -33,7 +33,7 @@ class ProfileController extends Controller
         // Hapus foto lama jika akan diganti
         if ($request->filled('cropped_image')) {
             // Hapus foto lama
-            if ($user->foto && \Storage::disk('public')->exists('foto_profil/' . $user->foto)) {
+            if ($user->foto && $user->foto !== 'default.png' && \Storage::disk('public')->exists('foto_profil/' . $user->foto)) {
                 \Storage::disk('public')->delete('foto_profil/' . $user->foto);
             }
 
@@ -68,7 +68,7 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.show')->with('success', 'Profil berhasil diperbarui!');
     }
 
 
@@ -92,4 +92,11 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function show(Request $request): View
+    {
+        $user = $request->user();
+        return view('profile.show', compact('user'));
+    }
+
 }

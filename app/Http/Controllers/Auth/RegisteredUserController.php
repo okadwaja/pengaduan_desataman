@@ -45,7 +45,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'nik' => $request->nik,
             'no_telp' => $request->no_telp,
-            'foto' => 'images/profile/default.png'
+            'foto' => 'default.png'
         ]);
 
         event(new Registered($user));

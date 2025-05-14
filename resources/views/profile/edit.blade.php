@@ -15,18 +15,19 @@
         @method('PATCH')
 
         <!-- Modal Crop -->
-        <div id="crop-modal" class="modal" tabindex="-1" style="display:none; position:fixed; z-index:1050; background-color:rgba(0,0,0,0.6); top:0; left:0; width:100%; height:100%;">
-        <div style="background:white; margin:5% auto; padding:20px; width:90%; max-width:500px;">
-            <h5>Crop Foto</h5>
-            <div>
-                <img id="image-to-crop" style="max-width: 100%;">
-            </div>
-            <div class="mt-2 text-end">
-                <button id="crop-cancel" class="btn btn-secondary btn-sm">Batal</button>
-                <button id="crop-confirm" class="btn btn-primary btn-sm">Oke</button>
+        <div id="crop-modal" class="modal" tabindex="-1" style="display:none; position:fixed; z-index:1050; background-color:rgba(0,0,0,0.6); top:0; left:0; width:100%; height:100%; overflow:auto;">
+            <div style="background:white; margin:5% auto; padding:20px; width:90%; max-width:500px; max-height:90vh; overflow:auto;">
+                <h5>Crop Foto</h5>
+                <div>
+                    <img id="image-to-crop" style="max-width: 100%;">
+                </div>
+                <div class="mt-2 text-end">
+                    <button id="crop-cancel" class="btn btn-secondary btn-sm">Batal</button>
+                    <button id="crop-confirm" class="btn btn-primary btn-sm">Oke</button>
+                </div>
             </div>
         </div>
-        </div>
+
 
 
         {{-- Upload foto baru --}}
@@ -91,12 +92,8 @@
 
         {{-- Tombol simpan --}}
         <div class="mb-4">
-        @if (auth()->user()->role === 'admin')
-            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">Kembali</a>
-        @else
-            <a href="{{ route('masyarakat.dashboard') }}" class="btn btn-secondary">Kembali</a>
-        @endif
-        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            <a href="{{ route('profile.show') }}" class="btn btn-secondary">Kembali</a>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
         </div>
         
     </form>
