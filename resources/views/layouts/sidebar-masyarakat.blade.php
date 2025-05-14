@@ -2,9 +2,8 @@
 <div id="wrapper">
     <ul class="navbar-nav bg-main sidebar sidebar-dark accordion" id="accordionSidebar">
 
-        <!-- Brand -->
-        <!-- Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
+    <!-- Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('masyarakat.dashboard') }}">
         <img
             src="{{ asset('storage/foto_profil/logo.png') }}">
     </a>
