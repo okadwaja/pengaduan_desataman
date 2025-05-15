@@ -4,7 +4,7 @@
 <div class="container text-main">
     <h1>Tanggapi Pengaduan</h1>
 
-    <div class="card mt-3 border-bottom-main">
+    <div class="card mt-3 border-left-main">
         <div class="card-body">
             <h5><strong>Judul: </strong>{{ $pengaduan->judul }}</h5>
             <p><strong>Isi: </strong>{{ $pengaduan->isi }}</p>
@@ -14,14 +14,14 @@
     <form action="{{ route('admin.pengaduan.tanggapan.store', $pengaduan->id) }}" method="POST" enctype="multipart/form-data" class="mt-3">
         @csrf
 
-        <div class="form-group mb-3 border-bottom-main">
+        <div class="form-group mb-3">
             <label><strong>Komentar Tanggapan</strong></label>
-            <textarea name="komentar" class="form-control" rows="4" required></textarea>
+            <textarea name="komentar" class="form-control border-left-main" rows="4" required></textarea>
         </div>
 
-        <div class="form-group mb-3 border-bottom-main">
+        <div class="form-group mb-3">
             <label><strong>Status Pengaduan</strong></label>
-            <select name="status" class="form-control" required>
+            <select name="status" class="form-control border-left-main" required>
                 <option value="diproses" {{ $pengaduan->status === 'diproses' ? 'selected' : '' }}>Diproses</option>
                 <option value="selesai" {{ $pengaduan->status === 'selesai' ? 'selected' : '' }}>Selesai</option>
                 <option value="ditolak" {{ $pengaduan->status === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
@@ -41,8 +41,10 @@
             <img id="preview-image" src="#" alt="Preview Foto" style="max-width: 300px; border: 1px solid #ddd; padding: 5px;">
         </div>
 
-        <button type="submit" class="btn btn-primary">Simpan Tanggapan</button>
-        <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary">Batal</a>
+        <div class="d-flex flex-column flex-md-row justify-content-between gap-2">
+            <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary">Batal</a>
+            <button type="submit" class="btn btn-primary">Simpan Tanggapan</button>
+        </div>
     </form>
 </div>
 @endsection
