@@ -12,24 +12,26 @@
                 alt="Foto Profil">
         </div>
 
-        <div class="col-md-8">
-            <ul class="list-group mb-4 border-left-main">
-                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                    <strong>Nama:</strong> <span>{{ $user->name }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                    <strong>NIK:</strong> <span>{{ $user->nik }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                    <strong>No Telepon:</strong> <span>{{ $user->no_telp }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                    <strong>Alamat:</strong> <span>{{ $user->alamat }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                    <strong>Email:</strong> <span>{{ $user->email }}</span>
-                </li>
-            </ul>
+        <div class=" col-12 col-md-8">
+            <div class="overflow-auto">
+                <ul class="list-group mb-4 border-left-main" style="min-width: 300px; white-space: nowrap;">
+                    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <strong>Nama:</strong> <span>{{ $user->name }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <strong>NIK:</strong> <span>{{ $user->nik }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <strong>No Telepon:</strong> <span>{{ $user->no_telp }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <strong>Alamat:</strong> <span>{{ $user->alamat }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <strong>Email:</strong> <span>{{ $user->email }}</span>
+                    </li>
+                </ul>
+            </div>
 
             <div class="d-flex justify-content-between">
                 <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Kembali</a>
