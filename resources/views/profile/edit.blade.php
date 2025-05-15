@@ -30,7 +30,7 @@
                             </div>
                             <div class="mt-2 text-end">
                                 <button id="crop-cancel" class="btn btn-secondary btn-sm">Batal</button>
-                                <button id="crop-confirm" class="btn btn-primary btn-sm">Oke</button>
+                                <button type="button" id="crop-confirm" class="btn btn-primary btn-sm">Oke</button>
                             </div>
                         </div>
                     </div>
