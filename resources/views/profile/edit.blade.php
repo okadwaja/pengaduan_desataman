@@ -11,7 +11,8 @@
             <img src="{{ asset('storage/foto_profil/' . $user->foto) }}"
             alt="Foto Profil"
             class="img-thumbnail rounded-circle mx-auto"
-            style="width: 150px; height: 150px; object-fit: cover;" >
+            style="width: 150px; height: 150px; object-fit: cover;"
+            id="foto-profil">
         </div>
 
         {{-- Form update --}}
@@ -41,16 +42,6 @@
                     <div class="mb-3">
                         <label for="foto" class="form-label">Upload Foto Baru</label>
                         <input type="file" id="foto" name="foto" class="form-control" accept="image/*,.heic,.heif" onchange="handleFile(event)">
-                    </div>
-
-                    {{-- Preview Foto --}}
-                    <div id="preview-container" style="margin-top: 10px; display: none;">
-                        <div id="loading-spinner" style="display: none;">
-                            <div class="spinner-border text-primary" role="status"></div>
-                        </div>
-                        <img id="preview-image" src="#" alt="Preview Foto" style="max-width: 300px; border: 1px solid #ddd; padding: 5px;">
-                        <br>
-                        <button type="button" class="btn btn-sm btn-danger mt-2" id="remove-preview">Hapus Preview</button>
                     </div>
 
                     <!-- Hidden Canvas dan input untuk menyimpan hasil crop -->
@@ -179,8 +170,7 @@ document.getElementById('crop-confirm').addEventListener('click', () => {
     const croppedData = canvas.toDataURL("image/jpeg", 0.8);
 
     // Preview
-    document.getElementById('preview-image').src = croppedData;
-    document.getElementById('preview-container').style.display = 'block';
+    document.getElementById('foto-profil').src = croppedData;
 
     // Simpan ke input hidden
     document.getElementById('cropped_image').value = croppedData;
