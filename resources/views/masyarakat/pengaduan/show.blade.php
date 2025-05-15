@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h1 class="text-main">Detail Pengaduan</h1>
+<div class="container text-main">
+    <h1>Detail Pengaduan</h1>
 
 {{-- Card Pengaduan --}}
-<div class="card mt-3 bg-main text-white">
+<div class="card mt-3 border-left-main">
     <div class="card-body">
         <div class="row">
             {{-- Foto Pengaduan --}}
@@ -19,12 +19,12 @@
             <div class="col-md-8">
 
                 <div class="row mb-2">
-                    <div class="col-sm-2 fw-semibold">Judul</div>
+                    <div class="col-sm-2 fw-semibold"><strong>Judul</strong></div>
                     <div class="col-sm-9">: {{ $pengaduan->judul }}</div>
                 </div>
 
                 <div class="row mb-2">
-                    <div class="col-sm-2 fw-semibold">Isi</div>
+                    <div class="col-sm-2 fw-semibold"><strong>Isi</strong></div>
                     <div class="col-sm-9">: {{ $pengaduan->isi }}</div>
                 </div>
 
@@ -40,12 +40,12 @@
                 @endphp
 
                 <div class="row mb-2">
-                    <div class="col-sm-2 fw-semibold">Status</div>
-                    <div class="col-sm-9">: <span class="badge bg-{{ $badgeClass }}">{{ ucfirst($pengaduan->status) }}</span></div>
+                    <div class="col-sm-2 fw-semibold"><strong>Status</strong></div>
+                    <div class="col-sm-9">: <span class="badge bg-{{ $badgeClass }} text-white">{{ ucfirst($pengaduan->status) }}</span></div>
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col-sm-2 fw-semibold">Waktu</div>
+                    <div class="col-sm-2 fw-semibold"><strong>Waktu</strong></div>
                     <div class="col-sm-9">: {{ $pengaduan->created_at->translatedFormat('d M Y H:i') }} WITA</div>
                 </div>
 
@@ -56,8 +56,9 @@
 </div>
 
 {{-- Card Tanggapan --}}
+<h1 class="text-main mt-4">Tanggapan</h1>
 @if($pengaduan->tanggapan)
-    <div class="card mt-4 bg-main text-white">
+    <div class="card mt-4 border-left-main">
         <div class="card-body">
             <div class="row">
                 {{-- Foto Tanggapan --}}
@@ -69,18 +70,16 @@
 
                 {{-- Komentar dan Info --}}
                 <div class="col-md-8">
-                    <h5 class="mb-3">Tanggapan Admin</h5>
-                    
                     <div class="row mb-2">
-                        <div class="col-sm-3 fw-semibold">Komentar</div>
+                        <div class="col-sm-3 fw-semibold"><strong>Komentar</strong></div>
                         <div class="col-sm-9">: {{ $pengaduan->tanggapan->komentar }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-sm-3 fw-semibold">Ditanggapi Oleh</div>
+                        <div class="col-sm-3 fw-semibold"><strong>Ditanggapi Oleh</strong></div>
                         <div class="col-sm-9">: {{ $pengaduan->tanggapan->user->name ?? 'Admin' }}</div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-3 fw-semibold">Tanggal</div>
+                        <div class="col-sm-3 fw-semibold"><strong>Waktu</strong></div>
                         <div class="col-sm-9">: {{ \Carbon\Carbon::parse($pengaduan->tanggapan->updated_at)->translatedFormat('H:i, d F Y') }}</div>
                     </div>
                 </div>
@@ -88,8 +87,10 @@
         </div>
     </div>
 @else
-    <div class="alert alert-secondary mt-4">
-        Belum ada tanggapan dari admin.
+    <div class="card mt-4 border-left-main">
+        <div class="card-body text-muted">
+            <em>Belum ada tanggapan dari admin.</em>
+        </div>
     </div>
 @endif
 

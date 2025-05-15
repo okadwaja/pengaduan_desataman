@@ -2,10 +2,10 @@
 
 @section('content')
 <div class="container text-main">
-    <h1 class="text-main">Detail Pengaduan</h1>
+    <h1>Detail Pengaduan</h1>
 
 {{-- Card Pengaduan --}}
-<div class="card mt-3 border-top-main">
+<div class="card mt-3 border-left-main">
     <div class="card-body">
         <div class="row">
             {{-- Foto Pengaduan --}}
@@ -49,6 +49,7 @@
                     <div class="col-sm-9">: {{ $pengaduan->created_at->translatedFormat('d M Y H:i') }} WITA</div>
                 </div>
 
+                <hr>
                 <br>
 
                 <div class="row mb-2">
@@ -84,7 +85,7 @@
 {{-- Card Tanggapan --}}
 <h1 class="text-main mt-4">Tanggapan</h1>
 @if($pengaduan->tanggapan)
-    <div class="card mt-4 border-top-main">
+    <div class="card mt-4 border-left-main">
         <div class="card-body">
             <div class="row">
                 {{-- Foto Tanggapan --}}
@@ -113,9 +114,9 @@
         </div>
     </div>
 @else
-    <div class="card mt-4 border-top-main">
-        <div class="card-body">
-            <i>Belum ada tanggapan dari admin.</i>
+    <div class="card mt-4 border-left-main">
+        <div class="card-body text-muted">
+            <em>Belum ada tanggapan dari admin.</em>
         </div>
     </div>
 @endif

@@ -24,11 +24,14 @@
     </script>
 @endif
 
-<div class="container">
+<div class="container text-main">
     <div class="mb-3">
-    <h2>Daftar Pengaduan Anda</h2>
+        <h1>Daftar Pengaduan Anda</h1>
     </div>
-    <a href="{{ route('masyarakat.pengaduan.create') }}" class="btn btn-main mb-3">Buat Pengaduan Baru</a>
+
+    <a href="{{ route('masyarakat.pengaduan.create') }}" class="btn btn-main mb-3">
+        <i class="fas fa-pen me-2"></i> Buat Pengaduan Baru
+    </a>
 
     <div class="table-responsive">
     <table class="table table-bordered">

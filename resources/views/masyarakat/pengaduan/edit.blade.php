@@ -1,40 +1,55 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h2>Edit Pengaduan</h2>
-    <form action="{{ route('masyarakat.pengaduan.update', $pengaduan->id) }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
+<div class="container px-1 text-main">
+    <h1>Edit Pengaduan</h1>
 
-        <div class="form-group mb-3">
-            <label>Judul</label>
-            <input type="text" name="judul" class="form-control" value="{{ old('judul', $pengaduan->judul) }}" required>
-        </div>
+    <form action="{{ route('masyarakat.pengaduan.update', $pengaduan->id) }}" method="POST" enctype="multipart/form-data" class="mt-3">
+            @csrf
+            @method('PUT')
 
-        <div class="form-group mb-3">
-            <label>Isi Pengaduan</label>
-            <textarea name="isi" class="form-control" rows="5" required>{{ old('isi', $pengaduan->isi) }}</textarea>
-        </div>
+            <div class="form-group mb-3">
+                <label>Judul</label>
+                <input type="text" name="judul" class="form-control border-left-main" value="{{ old('judul', $pengaduan->judul) }}" required>
+            </div>
 
-        <div class="form-group mb-3">
-            <label>Foto</label>
-            <input type="file" name="foto" class="form-control" id="foto-input" accept="image/*,.heic,.heif" onchange="previewImage(event)">
+            <div class="form-group mb-3">
+                <label>Isi Pengaduan</label>
+                <textarea name="isi" class="form-control border-left-main" rows="5" required>{{ old('isi', $pengaduan->isi) }}</textarea>
+            </div>
 
-            <!-- Preview foto -->
-            <div id="preview-container" style="margin-top: 10px; {{ $pengaduan->foto ? '' : 'display: none;' }}">
-            <div id="loading-spinner" style="display: none;">
-                <div class="spinner-border text-primary" role="status">
+            <div class="form-group mb-3">
+                <label>Foto</label>
+                <input type="file" name="foto" class="form-control" id="foto-input" accept="image/*,.heic,.heif" onchange="previewImage(event)">
+
+                <!-- Preview foto -->
+                <div
+                    id="preview-container"
+                    class="d-flex overflow-auto mt-3"
+                    style="{{ $pengaduan->foto ? '' : 'display: none;' }} max-width: 100%;"
+                >
+                    <div id="loading-spinner" style="display: none;">
+                        <div class="spinner-border text-primary" role="status"></div>
+                    </div>
+
+                    <img
+                        id="foto-preview"
+                        src="{{ $pengaduan->foto ? asset('storage/foto_pengaduan/' . $pengaduan->foto) : '#' }}"
+                        alt="Preview Foto"
+                        class="img-fluid"
+                        style="height: auto; border: 1px solid #ddd; padding: 5px; width: 100%; max-width: 300px;"
+                    >
                 </div>
             </div>
-                <img id="foto-preview" src="{{ $pengaduan->foto ? asset('storage/foto_pengaduan/' . $pengaduan->foto) : '#' }}" alt="Preview Foto" style="max-width: 300px; border: 1px solid #ddd; padding: 5px;">
-            </div>
-        </div>
 
-        <button type="submit" class="btn btn-primary mt-3">Update Pengaduan</button>
-    </form>
-    <a href="{{ route('masyarakat.pengaduan.index') }}" class="btn btn-secondary mt-3">Kembali</a>
-</div>
+
+            <div class="d-flex flex-column flex-md-row gap-2">
+                <a href="{{ route('masyarakat.pengaduan.index') }}" class="btn btn-secondary">Kembali</a>
+                <button type="submit" class="btn btn-primary">Update Pengaduan</button>
+    `       </div>
+
+        </form>
+    </div>
 @endsection
 
 @push('scripts')

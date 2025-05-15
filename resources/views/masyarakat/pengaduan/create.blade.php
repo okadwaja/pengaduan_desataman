@@ -1,37 +1,44 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h2>Form Pengaduan Masyarakat</h2>
-    <form action="{{ route('masyarakat.pengaduan.store') }}" method="POST" enctype="multipart/form-data">
+<div class="container px-1 text-main">
+    <h1>Form Pengaduan Masyarakat</h1>
+    
+    <form action="{{ route('masyarakat.pengaduan.store') }}" method="POST" enctype="multipart/form-data" class="mt-3">
         @csrf
 
         <div class="form-group mb-3">
             <label>Judul</label>
-            <input type="text" name="judul" class="form-control" required>
+            <input type="text" name="judul" class="form-control border-left-main" required>
         </div>
 
         <div class="form-group mb-3">
             <label>Isi Pengaduan</label>
-            <textarea name="isi" class="form-control" rows="5" required></textarea>
+            <textarea name="isi" class="form-control border-left-main" rows="5" required></textarea>
         </div>
 
         <div class="form-group mb-3">
             <label>Foto</label>
             <input type="file" name="foto" id="foto" class="form-control" accept="image/*,.heic,.heif" onchange="previewImage(event)" required>
-        </div>
 
-        <div id="preview-container" style="margin-top: 10px; display: none;">
-            <div id="loading-spinner" style="display: none;">
-                <div class="spinner-border text-primary" role="status">
+            <div id="preview-container" style="max-width: 100%; display: none;">
+                <div id="loading-spinner" style="display: none;">
+                    <div class="spinner-border text-primary" role="status"></div>
                 </div>
+                <img id="preview-image"
+                    src="#"
+                    alt="Preview Foto"
+                    class="img-fluid"
+                    style="height: auto; border: 1px solid #ddd; padding: 5px; width: 100%; max-width: 300px;"
+                >
             </div>
-            <img id="preview-image" src="#" alt="Preview Foto" style="max-width: 300px; border: 1px solid #ddd; padding: 5px;">
         </div>
 
-        <button type="submit" class="btn btn-primary mt-3">Kirim Pengaduan</button>
+        <div class="d-flex flex-column flex-md-row gap-2">
+            <a href="{{ route('masyarakat.pengaduan.index') }}" class="btn btn-secondary">Kembali</a>
+            <button type="submit" class="btn btn-primary">Kirim Pengaduan</button>
+        </div>
     </form>
-    <a href="{{ route('masyarakat.pengaduan.index') }}" class="btn btn-secondary mt-3">Kembali</a>
 </div>
 @endsection
 
