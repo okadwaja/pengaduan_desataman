@@ -24,6 +24,9 @@
     <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
     <!-- Scripts (Vite Laravel) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -79,7 +82,6 @@
 
     <!-- Drop down -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
-
 
     @stack('scripts')
 </body>

@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Models\Pengaduan;
+use App\Http\Controllers\AdminDashboardController;
 
 // Route awal (halaman landing)
 Route::get('/', function () {
@@ -11,7 +13,7 @@ Route::get('/', function () {
 });
 
 // Route dashboard umum, redirect berdasarkan role
-Route::get('/dashboard', function () {
+Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
     $role = auth()->user()->role;
 
     if ($role === 'admin') {
@@ -21,30 +23,32 @@ Route::get('/dashboard', function () {
     }
 
     abort(403);
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->name('dashboard');
 
 // Route untuk admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
 
-    // Admin bisa lihat semua pengaduan
+    //dashboard
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    // Admin lihat semua pengaduan
     Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
+    Route::get('/pengaduan/create', [PengaduanController::class, 'create'])->name('pengaduan.create');
+    Route::post('/pengaduan', [PengaduanController::class, 'store'])->name('pengaduan.store');
+    Route::get('/pengaduan/{pengaduan}', [PengaduanController::class, 'show'])->name('pengaduan.show');
+    Route::get('/pengaduan/{pengaduan}/edit', [PengaduanController::class, 'edit'])->name('pengaduan.edit');
+    Route::put('/pengaduan/{pengaduan}', [PengaduanController::class, 'update'])->name('pengaduan.update');
+    Route::delete('/pengaduan/{pengaduan}', [PengaduanController::class, 'destroy'])->name('pengaduan.destroy');
 
-    // Resource route lainnya (create, store, show, edit, update, destroy)
-    Route::resource('pengaduan', PengaduanController::class)->except(['index']);
-
-    //tanggapan
+    // Tanggapan
     Route::get('/pengaduan/{id}/tanggapan', [PengaduanController::class, 'createTanggapan'])->name('pengaduan.tanggapan.create');
     Route::post('/pengaduan/{id}/tanggapan', [PengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan.store');
 
-    // Manajemen user (read dan delete saja)
+    // Manajemen user
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::resource('user', UserController::class)->only(['index', 'show', 'destroy']);
 });
-
 
 // Route untuk masyarakat
 Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->name('masyarakat.')->group(function () {
@@ -52,24 +56,22 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->name('masy
         return view('masyarakat.dashboard');
     })->name('dashboard');
 
-    // Route index untuk masyarakat melihat daftar pengaduan miliknya
+    // Masyarakat lihat pengaduannya sendiri
     Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
-
-    // Resource route lainnya (create, store, show, edit, update, destroy)
-    Route::resource('pengaduan', PengaduanController::class)->except(['index']);
+    Route::get('/pengaduan/create', [PengaduanController::class, 'create'])->name('pengaduan.create');
+    Route::post('/pengaduan', [PengaduanController::class, 'store'])->name('pengaduan.store');
+    Route::get('/pengaduan/{pengaduan}', [PengaduanController::class, 'show'])->name('pengaduan.show');
+    Route::get('/pengaduan/{pengaduan}/edit', [PengaduanController::class, 'edit'])->name('pengaduan.edit');
+    Route::put('/pengaduan/{pengaduan}', [PengaduanController::class, 'update'])->name('pengaduan.update');
+    Route::delete('/pengaduan/{pengaduan}', [PengaduanController::class, 'destroy'])->name('pengaduan.destroy');
 });
-
 
 // Route profile (bisa diakses semua yang login)
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // Route auth bawaan
