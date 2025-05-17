@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Pengaduan;
+use Illuminate\Support\Facades\Auth;
+
+
+class MasyarakatDashboardController extends Controller
+{
+    public function index()
+    {
+        $user = Auth::user();
+
+        $jumlahTotal = Pengaduan::where('user_id', $user->id)->count();
+        $jumlahMenunggu = Pengaduan::where('user_id', $user->id)->where('status', 'menunggu')->count();
+        $jumlahDiproses = Pengaduan::where('user_id', $user->id)->where('status', 'diproses')->count();
+        $jumlahSelesai = Pengaduan::where('user_id', $user->id)->where('status', 'selesai')->count();
+        $jumlahDitolak = Pengaduan::where('user_id', $user->id)->where('status', 'ditolak')->count();
+
+        return view('masyarakat.dashboard', compact(
+            'jumlahTotal',
+            'jumlahMenunggu',
+            'jumlahDiproses',
+            'jumlahSelesai',
+            'jumlahDitolak'
+        ));
+    }
+}

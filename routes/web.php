@@ -6,6 +6,8 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Pengaduan;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\MasyarakatDashboardController;
+
 
 // Route awal (halaman landing)
 Route::get('/', function () {
@@ -52,9 +54,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
 // Route untuk masyarakat
 Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->name('masyarakat.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('masyarakat.dashboard');
-    })->name('dashboard');
+    
+    // Dashboard
+    Route::get('/dashboard', [MasyarakatDashboardController::class, 'index'])->name('dashboard');
 
     // Masyarakat lihat pengaduannya sendiri
     Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
