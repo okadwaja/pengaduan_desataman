@@ -121,7 +121,7 @@
     </div>
 @endif
 
-    <div class="mt-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mt-2">
         <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary">Kembali</a>
 
         @php

@@ -372,6 +372,7 @@ class PengaduanController extends Controller
                     \Log::info('File selain HEIC, diproses langsung');
 
                     $imagick = new \Imagick($file->getPathname());
+                    $this->fixImageOrientation($imagick); //Untuk rotate
                     $imagick->setImageFormat('jpg');
 
                     $imageSize = $file->getSize();
@@ -406,5 +407,25 @@ class PengaduanController extends Controller
 
         return redirect()->route('admin.pengaduan.index')->with('success', 'Tanggapan berhasil disimpan.');
     }
+
+    private function fixImageOrientation(\Imagick $image)
+    {
+        $orientation = $image->getImageOrientation();
+
+        switch ($orientation) {
+            case \Imagick::ORIENTATION_BOTTOMRIGHT:
+                $image->rotateImage("#000", 180);
+                break;
+            case \Imagick::ORIENTATION_RIGHTTOP:
+                $image->rotateImage("#000", 90);
+                break;
+            case \Imagick::ORIENTATION_LEFTBOTTOM:
+                $image->rotateImage("#000", -90);
+                break;
+        }
+
+        $image->setImageOrientation(\Imagick::ORIENTATION_TOPLEFT);
+    }
+
 
 }
