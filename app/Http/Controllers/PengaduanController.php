@@ -19,22 +19,42 @@ class PengaduanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-{
-    \Carbon\Carbon::setLocale('id');
-    $user = auth()->user();
+    public function index(Request $request)
+    {
+        \Carbon\Carbon::setLocale('id');
+        $user = auth()->user();
 
-    if ($user->role === 'admin') {
-        // Admin melihat semua pengaduan
-        $pengaduan = Pengaduan::with('user')->latest()->get();
-        return view('admin.pengaduan.index', compact('pengaduan', 'user'));
-    } else {
-        // Masyarakat hanya melihat pengaduan miliknya
-        $pengaduan = Pengaduan::where('user_id', $user->id)->latest()->get();
-        return view('masyarakat.pengaduan.index', compact('pengaduan', 'user'));
+        if ($user->role === 'admin') {
+            $query = Pengaduan::with('user');
 
+            // Search (judul, isi, nama user)
+            if ($request->filled('search')) {
+                $search = $request->search;
+                $query->where(function($q) use ($search) {
+                    $q->where('judul', 'like', "%{$search}%")
+                    ->orWhere('isi', 'like', "%{$search}%")
+                    ->orWhereHas('user', function($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%");
+                    });
+                });
+            }
+
+            // Filter status
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            $perPage = $request->get('perPage', 10); // Default 10 jika tidak diset
+            $pengaduan = $query->latest()->paginate($perPage);
+
+            return view('admin.pengaduan.index', compact('pengaduan', 'user'));
+        } else {
+            // Masyarakat hanya melihat pengaduan miliknya
+            $pengaduan = Pengaduan::where('user_id', $user->id)->latest()->get();
+            return view('masyarakat.pengaduan.index', compact('pengaduan', 'user'));
+        }
     }
-}
+
 
 
     /**

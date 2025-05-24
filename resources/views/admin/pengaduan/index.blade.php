@@ -3,10 +3,49 @@
 @section('content')
 
 <div class="container">
-    <h1 class="text-main">Data Pengaduan</h1>
+    <h1 class="text-main mb-2">Data Pengaduan</h1>
+
+    <form method="GET" action="{{ route('admin.pengaduan.index') }}" class="row g-2 mb-2">
+        <div class="col-md-4">
+            <input type="text" name="search" class="form-control" placeholder="Cari nama, judul, isi..." value="{{ request('search') }}">
+        </div>
+
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">Semua Status</option>
+                <option value="menunggu" {{ request('status') == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
+                <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" type="submit">Filter</button>
+        </div>
+
+        <div class="col-md-2">
+            <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary w-100">Reset</a>
+        </div>
+    </form>
+
+
 
     <div class="table-responsive">
-    <table class="table table-striped mt-3">
+    <div class="d-flex justify-content-between align-items-center">
+        <form method="GET" action="{{ route('admin.pengaduan.index') }}">
+            <div class="input-group mb-2">
+                <label class="input-group-text" for="perPage">Tampilkan</label>
+                <select class="form-select" name="perPage" id="perPage" onchange="this.form.submit()">
+                    @foreach ([10, 25, 50, 100] as $size)
+                        <option value="{{ $size }}" {{ request('perPage') == $size ? 'selected' : '' }}>{{ $size }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <table class="table table-striped">
         <thead class="bg-main">
             <tr>
                 <th>No.</td>
@@ -21,10 +60,11 @@
         <tbody>
             @forelse ($pengaduan as $item)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $item->user->name }}</td>
-                    <td>{{ $item->judul }}</td>
-                    <td>{{ $item->isi }}</td>
+                    <td>{{ ($pengaduan->currentPage() - 1) * $pengaduan->perPage() + $loop->iteration }}</td>
+                    <td style="max-width: 200px;" class="text-truncate">{{ $item->user->name }}</td>
+                    <td style="max-width: 200px;" class="text-truncate">{{ $item->judul }}</td>
+                    <td style="max-width: 300px;" class="text-truncate">{{ $item->isi }}</td>
+
                     
                     @php
                         $status = strtolower($item->status);
@@ -42,10 +82,11 @@
                         </span>
                     </td>
 
-                    <td>
+                    <td style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; max-width: 120px;">
                         {{ $item->created_at->translatedFormat('d M Y') }}<br>
                         {{ $item->created_at->format('H:i') }} WITA
                     </td>
+
                         <td>
                         @php
                             $status = strtolower($item->status);
@@ -53,12 +94,12 @@
                         @endphp
 
                         @if($disableTombol)
-                            <button class="btn btn-sm btn-secondary mb-2" disabled>Tanggapi</button>
+                            <button class="btn btn-sm btn-secondary mb-1" disabled>Tanggapi</button>
                         @else
-                            <a href="{{ route('admin.pengaduan.tanggapan.create', $item->id) }}" class="btn btn-sm btn-primary mb-2">Tanggapi</a>
+                            <a href="{{ route('admin.pengaduan.tanggapan.create', $item->id) }}" class="btn btn-sm btn-primary mb-1">Tanggapi</a>
                         @endif
 
-                            <a href="{{ route('admin.pengaduan.show', $item->id) }}" class="btn btn-info btn-sm">Detail</a>
+                            <a href="{{ route('admin.pengaduan.show', $item->id) }}" class="btn btn-info btn-sm mb-1">Detail</a>
                         </td>
                 </tr>
             @empty
@@ -68,6 +109,10 @@
             @endforelse
         </tbody>
     </table>
+    <div class="mt-3">
+        {{ $pengaduan->withQueryString()->links() }}
+    </div>
+
     </div>
 </div>
 
