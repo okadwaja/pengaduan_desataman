@@ -36,6 +36,15 @@
             </button>
         </div>
 
+        <div>
+            <a href="{{ route('admin.pengaduan.export.pdf', request()->query()) }}" class="btn btn-sm btn-danger me-2">
+                <i class="fas fa-file-pdf"></i> Export PDF
+            </a>
+            <a href="{{ route('admin.pengaduan.export.excel', request()->query()) }}" class="btn btn-sm btn-success">
+                <i class="fas fa-file-excel"></i> Export Excel
+            </a>
+        </div>
+
     </form>
 
 

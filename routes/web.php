@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Pengaduan;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\MasyarakatDashboardController;
+use App\Http\Controllers\PengaduanExportController;
 
 
 // Route awal (halaman landing)
@@ -50,6 +51,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::resource('user', UserController::class)->only(['index', 'show', 'destroy']);
+
+    // Export data
+    // Route export PDF
+    Route::get('/pengaduan/export/pdf', [PengaduanExportController::class, 'exportPdf'])->name('pengaduan.export.pdf');
+
+    // Route export Excel
+    Route::get('/pengaduan/export/excel', [PengaduanExportController::class, 'exportExcel'])->name('pengaduan.export.excel');
+
 });
 
 // Route untuk masyarakat

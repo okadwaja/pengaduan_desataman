@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PengaduanExport;
+
 
 class PengaduanController extends Controller
 {
@@ -63,7 +67,37 @@ class PengaduanController extends Controller
         }
     }
 
+    public function exportPdf(Request $request)
+    {
+        $query = Pengaduan::with('user');
 
+        // Search & Filter (optional)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                ->orWhere('isi', 'like', "%{$search}%")
+                ->orWhereHas('user', function($q2) use ($search) {
+                    $q2->where('name', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $pengaduan = $query->latest()->get();
+
+        $pdf = Pdf::loadView('admin.pengaduan.export_pdf', compact('pengaduan'));
+
+        return $pdf->download('data_pengaduan.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        return Excel::download(new PengaduanExport($request), 'data_pengaduan.xlsx');
+    }
 
 
     /**
