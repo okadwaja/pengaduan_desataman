@@ -9,11 +9,44 @@ use App\Models\User;
 class UserController extends Controller
 {
 
-public function index()
+public function index(Request $request)
 {
-    $users = User::where('role', '!=', 'admin')->get(); // Jangan tampilkan admin
-    return view('admin.users.index', compact('users'));
+    \Carbon\Carbon::setLocale('id');
+
+    $query = User::where('role', '!=', 'admin');
+
+    // Search by name, nik, or email
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+                ->orWhere('nik', 'like', "%{$search}%")
+                ->orWhere('no_telp', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+        });
+    }
+
+    // Filter by alamat
+    if ($request->filled('alamat')) {
+        $query->where('alamat', $request->alamat);
+    }
+
+    // Jumlah data per halaman
+    $perPage = $request->get('perPage', 10);
+
+    // Pagination
+    $users = $query->latest()->paginate($perPage)->appends($request->all());
+
+    // Kirim list alamat untuk filter dropdown
+    $alamatList = [
+        'Br. Batubayan', 'Br. Dlodpasar', 'Br. Gunung', 'Br. Jempeng',
+        'Br. Jempeng Kauh', 'Br. Ketogan', 'Br. Mambul', 'Br. Pegongan',
+        'Br. Raketan', 'Br. Sukajati', 'Br. Tabah', 'Br. Tebejero'
+    ];
+
+    return view('admin.users.index', compact('users', 'alamatList'));
 }
+
 
 public function destroy($id)
 {

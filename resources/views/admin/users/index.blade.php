@@ -25,10 +25,46 @@
     @endif
 
 <div class="container">
-    <h1 class="text-main">Data Pengguna</h1>
+    <h1 class="text-main mb-2">Data Pengguna</h1>
+
+    <form method="GET" action="{{ route('admin.users.index') }}" class="d-flex justify-content-between align-items-center flex-wrap mb-3 gap-2">
+
+        {{-- Jumlah data per halaman --}}
+        <div>
+            <select name="perPage" class="form-select" onchange="this.form.submit()">
+                @foreach ([10, 25, 50, 100] as $size)
+                    <option value="{{ $size }}" {{ request('perPage') == $size ? 'selected' : '' }}>{{ $size }} data</option>
+                @endforeach
+            </select>
+        </div>
+
+        {{-- Filter alamat --}}
+        <div>
+            <select name="alamat" class="form-select" onchange="this.form.submit()">
+                <option value="">-- Semua Alamat --</option>
+                @foreach ([
+                    'Br. Batubayan', 'Br. Dlodpasar', 'Br. Gunung', 'Br. Jempeng',
+                    'Br. Jempeng Kauh', 'Br. Ketogan', 'Br. Mambul', 'Br. Pegongan',
+                    'Br. Raketan', 'Br. Sukajati', 'Br. Tabah', 'Br. Tebejero'
+                ] as $alamat)
+                    <option value="{{ $alamat }}" {{ request('alamat') == $alamat ? 'selected' : '' }}>{{ $alamat }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        {{-- Search --}}
+        <div class="input-group" style="max-width: 300px;">
+            <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari...">
+            <button type="submit" class="btn btn-outline-secondary">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+    </form>
+
 
     <div class="table-responsive">
-    <table class="table table-striped mt-3">
+    <table class="table table-striped">
         <thead class="bg-main">
             <tr>
                 <th>No.</td>
@@ -41,9 +77,9 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($users as $user)
+            @forelse($users as $user)
             <tr>
-                <td>{{ $loop->iteration }}</td>
+                <td>{{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->nik }}</td>
                 <td>{{ $user->no_telp }}</td>
@@ -61,7 +97,11 @@
                 </td>
 
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="7">Belum ada user.</td>
+            </tr>
+            @endforelse
 
             <script>
                 function confirmDelete(id) {
@@ -84,6 +124,9 @@
             
         </tbody>
     </table>
+    <div class="mt-3">
+        {{ $users->withQueryString()->links() }}
+    </div>
 </div>
 </div>
 @endsection
