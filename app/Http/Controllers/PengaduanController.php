@@ -27,13 +27,13 @@ class PengaduanController extends Controller
         if ($user->role === 'admin') {
             $query = Pengaduan::with('user');
 
-            // Search (judul, isi, nama user)
+            // Search
             if ($request->filled('search')) {
                 $search = $request->search;
-                $query->where(function($q) use ($search) {
+                $query->where(function ($q) use ($search) {
                     $q->where('judul', 'like', "%{$search}%")
                     ->orWhere('isi', 'like', "%{$search}%")
-                    ->orWhereHas('user', function($q2) use ($search) {
+                    ->orWhereHas('user', function ($q2) use ($search) {
                         $q2->where('name', 'like', "%{$search}%");
                     });
                 });
@@ -44,16 +44,25 @@ class PengaduanController extends Controller
                 $query->where('status', $request->status);
             }
 
-            $perPage = $request->get('perPage', 10); // Default 10 jika tidak diset
-            $pengaduan = $query->latest()->paginate($perPage);
+            // Jumlah data per halaman
+            $perPage = $request->get('perPage', 10);
+
+            // Ambil data dan jaga agar parameter tetap saat pagination
+            $pengaduan = $query->latest()->paginate($perPage)->appends($request->all());
 
             return view('admin.pengaduan.index', compact('pengaduan', 'user'));
         } else {
-            // Masyarakat hanya melihat pengaduan miliknya
-            $pengaduan = Pengaduan::where('user_id', $user->id)->latest()->get();
+            // Untuk masyarakat tetap gunakan pagination dan perPage
+            $perPage = $request->get('perPage', 10);
+            $pengaduan = Pengaduan::where('user_id', $user->id)
+                ->latest()
+                ->paginate($perPage)
+                ->appends($request->all());
+
             return view('masyarakat.pengaduan.index', compact('pengaduan', 'user'));
         }
     }
+
 
 
 

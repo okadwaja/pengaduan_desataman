@@ -5,45 +5,44 @@
 <div class="container">
     <h1 class="text-main mb-2">Data Pengaduan</h1>
 
-    <form method="GET" action="{{ route('admin.pengaduan.index') }}" class="row g-2 mb-2">
-        <div class="col-md-4">
-            <input type="text" name="search" class="form-control" placeholder="Cari nama, judul, isi..." value="{{ request('search') }}">
-        </div>
+    <form method="GET" action="{{ route('admin.pengaduan.index') }}" class="d-flex justify-content-between align-items-center flex-wrap mb-3 gap-2">
 
-        <div class="col-md-3">
-            <select name="status" class="form-select">
-                <option value="">Semua Status</option>
-                <option value="menunggu" {{ request('status') == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
-                <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
-                <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+        {{-- Dropdown jumlah per halaman --}}
+        <div>
+            <select name="perPage" class="form-select" onchange="this.form.submit()">
+                @foreach ([10, 25, 50, 100] as $size)
+                    <option value="{{ $size }}" {{ request('perPage') == $size ? 'selected' : '' }}>{{ $size }} data</option>
+                @endforeach
             </select>
         </div>
 
-        <div class="col-md-2">
-            <button class="btn btn-primary w-100" type="submit">Filter</button>
+        {{-- Filter status --}}
+        <div>
+            <select name="status" class="form-select" onchange="this.form.submit()">
+                <option value="">-- Semua Status --</option>
+                @foreach (['menunggu', 'diproses', 'selesai', 'ditolak'] as $status)
+                    <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
+                        {{ ucfirst($status) }}
+                    </option>
+                @endforeach
+            </select>
         </div>
 
-        <div class="col-md-2">
-            <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary w-100">Reset</a>
+        {{-- Search --}}
+        <div class="input-group" style="max-width: 300px;">
+            <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari judul, isi, atau nama...">
+            <button type="submit" class="btn btn-outline-secondary">
+                <i class="fas fa-search"></i>
+            </button>
         </div>
+
     </form>
 
 
 
+
+
     <div class="table-responsive">
-    <div class="d-flex justify-content-between align-items-center">
-        <form method="GET" action="{{ route('admin.pengaduan.index') }}">
-            <div class="input-group mb-2">
-                <label class="input-group-text" for="perPage">Tampilkan</label>
-                <select class="form-select" name="perPage" id="perPage" onchange="this.form.submit()">
-                    @foreach ([10, 25, 50, 100] as $size)
-                        <option value="{{ $size }}" {{ request('perPage') == $size ? 'selected' : '' }}>{{ $size }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </form>
-    </div>
 
     <table class="table table-striped">
         <thead class="bg-main">
