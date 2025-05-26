@@ -63,6 +63,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/users/export/pdf', [UserExportController::class, 'exportPdf'])->name('users.export.pdf');
     Route::get('/users/export/excel', [UserExportController::class, 'exportExcel'])->name('users.export.excel');
 
+    //Route export PDF detail pengaduan
+    Route::get('/pengaduan/{id}/export/pdf', [PengaduanController::class, 'exportDetailPdf'])
+        ->name('pengaduan.export.detail.pdf');
+
+
 });
 
 // Route untuk masyarakat

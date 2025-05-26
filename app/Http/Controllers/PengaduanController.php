@@ -67,6 +67,7 @@ class PengaduanController extends Controller
         }
     }
 
+    // FUNGSI EXPORT PDF
     public function exportPdf(Request $request)
     {
         $query = Pengaduan::with('user');
@@ -94,10 +95,24 @@ class PengaduanController extends Controller
         return $pdf->download('data_pengaduan.pdf');
     }
 
+    // Export excel
     public function exportExcel(Request $request)
     {
         return Excel::download(new PengaduanExport($request), 'data_pengaduan.xlsx');
     }
+
+    // Export detail
+    public function exportDetailPdf($id)
+    {
+        $pengaduan = Pengaduan::with(['user', 'tanggapan'])->findOrFail($id);
+
+        $pdf = Pdf::loadView('admin.pengaduan.detail_pdf', compact('pengaduan'))
+            ->setPaper('A4', 'portrait');
+
+        return $pdf->download('detail_pengaduan_' . $pengaduan->id . '.pdf');
+    }
+
+
 
 
     /**
@@ -165,6 +180,7 @@ class PengaduanController extends Controller
                         // Untuk format JPG, PNG, JPEG biasa (gunakan Imagick untuk kompresi)
                         $imagick = new \Imagick();
                         $imagick->readImage($file->getPathname());
+                        $this->fixImageOrientation($imagick); // fix orientasi gambar (ROTATE)
                         $imagick->setImageFormat('jpg'); // Pastikan hasil akhirnya JPG
                         $imageSize = $file->getSize();
             
@@ -312,6 +328,7 @@ class PengaduanController extends Controller
                 } else {
                     $imagick = new \Imagick();
                     $imagick->readImage($file->getPathname());
+                    $this->fixImageOrientation($imagick); // Fix orientasi gambar (Rotate)
                     $imagick->setImageFormat('jpg');
                     $imageSize = $file->getSize();
 

@@ -4,8 +4,14 @@
 <div class="container text-main">
     <h1>Detail Pengaduan</h1>
 
+    <div class="d-flex justify-content-end">
+        <a href="{{ route('admin.pengaduan.export.detail.pdf', $pengaduan->id) }}" class="btn btn-sm btn-danger mb-1" target="_blank">
+            <i class="fas fa-file-pdf"></i> Download PDF
+        </a>
+    </div>
+
 {{-- Card Pengaduan --}}
-<div class="card mt-3 border-left-main">
+<div class="card border-left-main">
     <div class="card-body">
         <div class="row">
             {{-- Foto Pengaduan --}}
