@@ -67,6 +67,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/pengaduan/{id}/export/pdf', [PengaduanController::class, 'exportDetailPdf'])
         ->name('pengaduan.export.detail.pdf');
 
+    // Route export PDF detail users
+    Route::get('/user/{id}/export/pdf', [UserController::class, 'exportDetailPdf'])
+        ->name('users.export.detail.pdf');
+
+
+
 
 });
 

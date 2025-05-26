@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserController extends Controller
 {
@@ -60,5 +61,14 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         return view('admin.users.show', compact('user'));
     }
+
+    public function exportDetailPdf($id)
+    {
+        $user = User::findOrFail($id);
+
+        $pdf = Pdf::loadView('admin.users.detail_pdf', compact('user'))->setPaper('a4', 'portrait');
+
+        return $pdf->download('detail_user_'.$user->id.'.pdf');
+}
 
 }
