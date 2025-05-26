@@ -3,6 +3,25 @@
 <head>
     <meta charset="utf-8">
     <title>Export Excel - Data Pengaduan</title>
+
+    <style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #000;
+        padding: 5px;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
 </head>
 <body>
     <h2>Data Pengaduan</h2>

@@ -8,6 +8,8 @@ use App\Models\Pengaduan;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\MasyarakatDashboardController;
 use App\Http\Controllers\PengaduanExportController;
+use App\Http\Controllers\UserExportController;
+
 
 
 // Route awal (halaman landing)
@@ -53,11 +55,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('user', UserController::class)->only(['index', 'show', 'destroy']);
 
     // Export data
-    // Route export PDF
+    // Route export PDF dan excel pengaduan
     Route::get('/pengaduan/export/pdf', [PengaduanExportController::class, 'exportPdf'])->name('pengaduan.export.pdf');
-
-    // Route export Excel
     Route::get('/pengaduan/export/excel', [PengaduanExportController::class, 'exportExcel'])->name('pengaduan.export.excel');
+
+    // Route export PDF dan excel users
+    Route::get('/users/export/pdf', [UserExportController::class, 'exportPdf'])->name('users.export.pdf');
+    Route::get('/users/export/excel', [UserExportController::class, 'exportExcel'])->name('users.export.excel');
 
 });
 

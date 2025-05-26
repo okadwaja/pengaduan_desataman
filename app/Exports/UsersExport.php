@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Pengaduan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class PengaduanExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
+class UsersExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
 {
     protected $request;
 
@@ -22,21 +22,20 @@ class PengaduanExport implements FromCollection, WithHeadings, WithMapping, With
 
     public function collection()
     {
-        $query = Pengaduan::with('user');
+        $query = User::where('role', '!=', 'admin');
+
+        if ($this->request->filled('alamat')) {
+            $query->where('alamat', $this->request->alamat);
+        }
 
         if ($this->request->filled('search')) {
             $search = $this->request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('judul', 'like', "%{$search}%")
-                    ->orWhere('isi', 'like', "%{$search}%")
-                    ->orWhereHas('user', function ($q2) use ($search) {
-                        $q2->where('name', 'like', "%{$search}%");
-                    });
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('nik', 'like', "%{$search}%")
+                    ->orWhere('no_telp', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
             });
-        }
-
-        if ($this->request->filled('status')) {
-            $query->where('status', $this->request->status);
         }
 
         return $query->latest()->get();
@@ -44,21 +43,28 @@ class PengaduanExport implements FromCollection, WithHeadings, WithMapping, With
 
     public function headings(): array
     {
-        return ['No', 'Nama Pengirim', 'Judul', 'Isi', 'Status', 'Waktu'];
+        return [
+            'No',
+            'Nama',
+            'Email',
+            'NIK',
+            'No Telepon',
+            'Alamat',
+        ];
     }
 
-    public function map($item): array
+    public function map($user): array
     {
         static $i = 0;
         $i++;
 
         return [
             $i,
-            $item->user->name ?? '-',
-            $item->judul,
-            $item->isi,
-            ucfirst($item->status),
-            $item->created_at->format('d/m/Y H:i'),
+            $user->name,
+            $user->email,
+            "'" . $user->nik,
+            "'" . $user->no_telp,
+            $user->alamat,
         ];
     }
 
