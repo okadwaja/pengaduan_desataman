@@ -61,7 +61,7 @@
         </div>
 
         {{-- Export Data --}}
-        <div class="d-flex justify-content-end mb-3">
+        <div class="d-flex justify-content-end">
             <a href="{{ route('admin.users.export.pdf', request()->query()) }}" class="btn btn-danger btn-sm me-2">
                 <i class="fas fa-file-pdf"></i> Export PDF
             </a>

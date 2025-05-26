@@ -112,6 +112,19 @@ class PengaduanController extends Controller
         return $pdf->download('detail_pengaduan_' . $pengaduan->id . '.pdf');
     }
 
+    public function exportDetailPdfMasyarakat($id)
+    {
+        $pengaduan = Pengaduan::with(['user', 'tanggapan'])->findOrFail($id);
+
+        // Pastikan user hanya bisa melihat miliknya
+        if (auth()->user()->id !== $pengaduan->user_id) {
+            abort(403);
+        }
+
+        return Pdf::loadView('masyarakat.pengaduan.detail_pdf', compact('pengaduan'))
+            ->stream('pengaduan_detail_' . $pengaduan->id . '.pdf');
+    }
+
 
 
 

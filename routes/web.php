@@ -90,6 +90,11 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->name('masy
     Route::get('/pengaduan/{pengaduan}/edit', [PengaduanController::class, 'edit'])->name('pengaduan.edit');
     Route::put('/pengaduan/{pengaduan}', [PengaduanController::class, 'update'])->name('pengaduan.update');
     Route::delete('/pengaduan/{pengaduan}', [PengaduanController::class, 'destroy'])->name('pengaduan.destroy');
+
+    // Fitur Export
+    Route::get('/pengaduan/{id}/export/pdf', [PengaduanController::class, 'exportDetailPdfMasyarakat'])
+    ->name('pengaduan.export.detail.pdf');
+
 });
 
 // Route profile (bisa diakses semua yang login)
