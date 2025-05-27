@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PengaduanExport;
+use Illuminate\Support\Facades\Mail;
 
 
 class PengaduanController extends Controller
@@ -495,6 +496,13 @@ class PengaduanController extends Controller
             $tanggapan->foto = $fotoPath;
         }
         $tanggapan->save();
+
+        // Kirim email ke pelapor saat status berubah
+        try {
+            $pengaduan->user->notify(new \App\Notifications\PengaduanStatusUpdated($pengaduan));
+        } catch (\Exception $e) {
+            \Log::error('Gagal mengirim email status pengaduan: ' . $e->getMessage());
+        }
 
         \Log::info('Tanggapan berhasil disimpan');
 
