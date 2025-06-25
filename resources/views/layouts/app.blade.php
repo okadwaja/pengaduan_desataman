@@ -43,6 +43,8 @@
                     @include('layouts.sidebar-admin')
                 @elseif (Auth::user()->role === 'masyarakat')
                     @include('layouts.sidebar-masyarakat')
+                @elseif (Auth::user()->role === 'kepala_desa')
+                    @include('layouts.sidebar-kepala_desa')
                 @endif
             @endif
 

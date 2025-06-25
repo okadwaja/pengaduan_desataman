@@ -22,14 +22,14 @@
         <li class="nav-item">
             <a class="nav-link" href="{{ route('masyarakat.pengaduan.create') }}">
                 <i class="fas fa-fw fa-pen"></i>
-                <span>Insert Pengaduan</span></a>
+                <span>Input Pengaduan</span></a>
         </li>
 
         <!-- Menu Pengaduan -->
         <li class="nav-item">
             <a class="nav-link" href="{{ route('masyarakat.pengaduan.index') }}">
                 <i class="fas fa-fw fa-inbox"></i>
-                <span>Data Pengaduan</span></a>
+                <span>Daftar Pengaduan</span></a>
         </li>
 
         <!-- Logout -->

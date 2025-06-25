@@ -41,6 +41,15 @@ class PengaduanExportController extends Controller
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
+        
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+        }
+
+        // filter sesuai role Kepala Desa
+        if (auth()->user()->role === 'kepala_desa') {
+            $query->whereIn('status', ['terverifikasi', 'diproses', 'selesai', 'ditolak']);
+        }
 
         return $query->latest();
     }

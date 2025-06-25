@@ -29,7 +29,13 @@
                 @enderror
 
                 <!-- Password -->
-                <input type="password" name="password" class="form__input" placeholder="Password" required>
+                <div class="position-relative">
+                    <input type="password" name="password" id="password" class="form__input form-control pe-5" placeholder="Password" required>
+                    <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;" onclick="togglePassword()">
+                        <i class="fas fa-eye" id="togglePasswordIcon"></i>
+                    </span>
+                </div>
+
                 @error('password')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -61,3 +67,18 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('togglePasswordIcon');
+        const isPassword = passwordInput.type === 'password';
+
+        passwordInput.type = isPassword ? 'text' : 'password';
+        toggleIcon.classList.toggle('fa-eye');
+        toggleIcon.classList.toggle('fa-eye-slash');
+    }
+</script>
+@endpush
+

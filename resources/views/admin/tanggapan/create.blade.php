@@ -1,8 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+
+    @php
+        $user = auth()->user();
+        $isKepalaDesa = $user->role === 'kepala_desa';
+    @endphp
+
 <div class="container text-main">
-    <h1>Tanggapi Pengaduan</h1>
+    <h1>{{ $isKepalaDesa ? 'Tanggapi Pengaduan' : 'Verifikasi Pengaduan' }}</h1>
 
     <div class="card mt-3 border-left-main">
         <div class="card-body">
@@ -11,26 +17,33 @@
         </div>
     </div>
 
-    <form action="{{ route('admin.pengaduan.tanggapan.store', $pengaduan->id) }}" method="POST" enctype="multipart/form-data" class="mt-3">
+    <form action="{{ $isKepalaDesa ? route('kepala_desa.pengaduan.tanggapan.store', $pengaduan->id) : route('admin.pengaduan.tanggapan.store', $pengaduan->id) }}" method="POST" enctype="multipart/form-data" class="mt-3">
         @csrf
 
         <div class="form-group mb-3">
-            <label><strong>Komentar Tanggapan</strong></label>
+            <label><strong>{{ $isKepalaDesa ? 'Komentar Tanggapan' : 'Komentar Verifikasi' }}</strong></label>
             <textarea name="komentar" class="form-control border-left-main" rows="4" required></textarea>
         </div>
 
         <div class="form-group mb-3">
             <label><strong>Status Pengaduan</strong></label>
             <select name="status" class="form-control border-left-main" required>
-                <option value="diproses" {{ $pengaduan->status === 'diproses' ? 'selected' : '' }}>Diproses</option>
-                <option value="selesai" {{ $pengaduan->status === 'selesai' ? 'selected' : '' }}>Selesai</option>
-                <option value="ditolak" {{ $pengaduan->status === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                @if ($isKepalaDesa)
+                    <option value="diproses" {{ $pengaduan->status === 'diproses' ? 'selected' : '' }}>Diproses</option>
+                    <option value="selesai" {{ $pengaduan->status === 'selesai' ? 'selected' : '' }}>Selesai</option>
+                    <option value="ditolak" {{ $pengaduan->status === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                @else
+                    <option value="terverifikasi" {{ $pengaduan->status === 'terverifikasi' ? 'selected' : '' }}>Terverifikasi</option>
+                    <option value="berkas tidak valid" {{ $pengaduan->status === 'berkas tidak valid' ? 'selected' : '' }}>Berkas Tidak Valid</option>
+                @endif
             </select>
         </div>
 
+        @if ($isKepalaDesa)
         <div class="form-group mb-3">
             <label><strong>Foto Tanggapan (Opsional)</strong></label>
             <input type="file" name="foto" class="form-control" accept="image/*,.heic,.heif" onchange="previewImage(event)">
+            <small class="text-muted">*Max 8Mb File:jpeg,png,jpg</small>
         </div>
 
         <div id="preview-container" style="margin-top: 10px; display: none;">
@@ -40,10 +53,13 @@
             </div>
             <img id="preview-image" src="#" alt="Preview Foto" style="max-width: 300px; border: 1px solid #ddd; padding: 5px;">
         </div>
+        @endif
 
         <div class="d-flex flex-column flex-md-row justify-content-between gap-2">
-            <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary">Batal</a>
-            <button type="submit" class="btn btn-primary">Simpan Tanggapan</button>
+            <a href="{{ $isKepalaDesa ? route('kepala_desa.pengaduan.index') : route('admin.pengaduan.index') }}" class="btn btn-secondary">Batal</a>
+            <button type="submit" class="btn btn-primary">
+                {{ $isKepalaDesa ? 'Simpan Tanggapan' : 'Simpan Verifikasi' }}
+            </button>
         </div>
     </form>
 </div>

@@ -2,32 +2,15 @@
 
 @section('content')
 <div class="mb-4">
-    <h1 class="text-main">Dashboard Admin</h1>
+    <h1 class="text-main">Dashboard Kepala Desa</h1>
 </div>
 
 <!-- Content Jumlah Pengaduan -->
 
 <div class="row">
     
-    <!-- Menunggu -->
-    <div class="col-xl-2 col-md-4 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Pengaduan Menunggu</div>
-                        <div class="h5 mb-0 font-weight-bold text-warning">{{ $jumlahMenunggu }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-clock fa-2x text-warning"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- Terverifikasi -->
-    <div class="col-xl-2 col-md-4 mb-4">
+    <div class="col-xl-3 col-md-4 mb-4">
         <div class="card border-left-info shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
@@ -43,25 +26,8 @@
             </div>
         </div>
     </div>
-    <!-- Berkas Tidak Valid -->
-    <div class="col-xl-2 col-md-4 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                            Berkas Tidak Valid</div>
-                        <div class="h5 mb-0 font-weight-bold text-danger">{{ $jumlahTerverifikasi }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-ban fa-2x text-danger"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- Diproses -->
-    <div class="col-xl-2 col-md-4 mb-4">
+    <div class="col-xl-3 col-md-4 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
@@ -80,7 +46,7 @@
     </div>
 
     <!-- Selesai -->
-    <div class="col-xl-2 col-md-4 mb-4">
+    <div class="col-xl-3 col-md-4 mb-4">
         <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
@@ -99,7 +65,7 @@
     </div>
 
     <!-- Ditolak -->
-    <div class="col-xl-2 col-md-4 mb-4">
+    <div class="col-xl-3 col-md-4 mb-4">
         <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
@@ -110,20 +76,6 @@
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-times-circle fa-2x text-danger"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Total -->
-    <div class="col-xl-2 col-md-4 mb-4">
-        <div class="card bg-main shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
-                            Total Pengaduan</div>
-                        <div class="h5 mb-0 font-weight-bold text-white">{{ $jumlahTotal }}</div>
                     </div>
                 </div>
             </div>

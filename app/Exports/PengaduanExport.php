@@ -24,6 +24,11 @@ class PengaduanExport implements FromCollection, WithHeadings, WithMapping, With
     {
         $query = Pengaduan::with('user');
 
+        // Filter untuk role kepala desa
+        if (auth()->user()->role === 'kepala_desa') {
+            $query->whereIn('status', ['terverifikasi', 'diproses', 'selesai', 'ditolak']);
+        }
+
         if ($this->request->filled('search')) {
             $search = $this->request->search;
             $query->where(function ($q) use ($search) {
@@ -37,6 +42,10 @@ class PengaduanExport implements FromCollection, WithHeadings, WithMapping, With
 
         if ($this->request->filled('status')) {
             $query->where('status', $this->request->status);
+        }
+
+        if ($this->request->filled('start_date') && $this->request->filled('end_date')) {
+            $query->whereBetween('created_at', [$this->request->start_date, $this->request->end_date]);
         }
 
         return $query->latest()->get();

@@ -41,6 +41,8 @@
                         'diproses' => 'primary',
                         'selesai'  => 'success',
                         'ditolak'  => 'danger',
+                        'terverifikasi' => 'info',
+                        'berkas tidak valid' => 'danger',
                         default    => 'secondary'
                     };
                 @endphp
@@ -122,7 +124,7 @@
 @else
     <div class="card mt-4 border-left-main">
         <div class="card-body text-muted">
-            <em>Belum ada tanggapan dari admin.</em>
+            <em>Belum ada tanggapan.</em>
         </div>
     </div>
 @endif
@@ -132,16 +134,16 @@
 
         @php
             $status = strtolower($pengaduan->status);
-            $isEditable = in_array($status, ['menunggu', 'diproses']);
+            $isEditable = in_array($status, ['menunggu', 'berkas tidak valid']);
         @endphp
 
         @if($isEditable)
             <a href="{{ route('admin.pengaduan.tanggapan.create', $pengaduan->id) }}" class="btn btn-primary">
-                {{ $status === 'menunggu' ? 'Tanggapi' : 'Update Tanggapan' }}
+                {{ $status === 'menunggu' ? 'Verifikasi' : 'Verifikasi' }}
             </a>
         @else
             <button class="btn btn-secondary" disabled>
-                Update Tanggapan
+                Verifikasi
             </button>
         @endif
 

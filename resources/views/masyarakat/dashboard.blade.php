@@ -8,20 +8,7 @@
 <!-- Content Jumlah Pengaduan -->
 
 <div class="row">
-    <!-- Total -->
-    <div class="col-xl-3 col-md-4 mb-4">
-        <div class="card bg-main shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
-                            Total Pengaduan Anda</div>
-                        <div class="h5 mb-0 font-weight-bold text-white">{{ $jumlahTotal }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
     <!-- Menunggu -->
     <div class="col-xl-2 col-md-4 mb-4">
         <div class="card border-left-warning shadow h-100 py-2">
@@ -39,7 +26,40 @@
             </div>
         </div>
     </div>
-
+    <!-- Terverifikasi -->
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Pengaduan Terverifikasi</div>
+                        <div class="h5 mb-0 font-weight-bold text-info">{{ $jumlahTerverifikasi }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-file fa-2x text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Berkas Tidak Valid -->
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            Berkas Tidak Valid</div>
+                        <div class="h5 mb-0 font-weight-bold text-danger">{{ $jumlahBerkas_tidak_valid }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-ban fa-2x text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Diproses -->
     <div class="col-xl-2 col-md-4 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
@@ -90,6 +110,20 @@
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-ban fa-2x text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Total -->
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card bg-main shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
+                            Total Pengaduan Anda</div>
+                        <div class="h5 mb-0 font-weight-bold text-white">{{ $jumlahTotal }}</div>
                     </div>
                 </div>
             </div>

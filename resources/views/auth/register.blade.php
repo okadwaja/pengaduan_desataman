@@ -37,10 +37,21 @@
                 <input type="email" name="email" class="form__input" placeholder="Email" value="{{ old('email') }}" required>
                 @error('email') <div class="text-danger">{{ $message }}</div> @enderror
 
-                <input type="password" name="password" class="form__input" placeholder="Password" required>
+                <div class="position-relative">
+                    <input type="password" name="password" id="password" class="form__input" placeholder="Password" required style="margin-bottom: 0;">
+                    <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;" onclick="togglePassword('password', 'togglePasswordIcon')">
+                        <i class="fas fa-eye" id="togglePasswordIcon"></i>
+                    </span>
+                </div>
+                <small class="text-muted" style="margin-left: 30px">*Minimal 8 karakter</small>
                 @error('password') <div class="text-danger">{{ $message }}</div> @enderror
 
-                <input type="password" name="password_confirmation" class="form__input" placeholder="Konfirmasi Password" required>
+                <div class="position-relative mt-2">
+                    <input type="password" name="password_confirmation" id="password_confirmation" class="form__input" placeholder="Konfirmasi Password" required>
+                    <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;" onclick="togglePassword('password_confirmation', 'toggleConfirmPasswordIcon')">
+                        <i class="fas fa-eye" id="toggleConfirmPasswordIcon"></i>
+                    </span>
+                </div>
 
                 <div class="text-center">
                     <button type="submit" class="btn btn-custom">Register</button>
@@ -54,3 +65,18 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function togglePassword(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+        const isPassword = input.type === 'password';
+
+        input.type = isPassword ? 'text' : 'password';
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    }
+</script>
+@endpush
+

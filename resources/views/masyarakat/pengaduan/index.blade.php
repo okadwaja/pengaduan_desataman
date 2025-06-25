@@ -79,6 +79,8 @@
                             'diproses' => 'primary',
                             'selesai'  => 'success',
                             'ditolak'  => 'danger',
+                            'terverifikasi' => 'info',
+                            'berkas tidak valid' => 'danger',
                             default    => 'secondary'
                         };
                     @endphp

@@ -2,7 +2,7 @@
 <ul class="navbar-nav bg-main sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('kepala_desa.dashboard') }}">
         <img
             src="{{ asset('storage/foto_profil/logo.png') }}">
     </a>
@@ -12,23 +12,16 @@
 
     <!-- Menu Dashboard -->
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.dashboard') }}">
+        <a class="nav-link" href="{{ route('kepala_desa.dashboard') }}">
             <i class="fas fa-fw fa-home"></i>
             <span>Dashboard</span></a>
     </li>
 
     <!-- Menu Pengaduan -->
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.pengaduan.index') }}">
+        <a class="nav-link" href="{{ route('kepala_desa.pengaduan.index') }}">
             <i class="fas fa-fw fa-inbox"></i>
             <span>Daftar Pengaduan</span></a>
-    </li>
-
-    <!-- Menu Users -->
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.users.index') }}">
-            <i class="fas fa-fw fa-user"></i>
-            <span>Daftar User</span></a>
     </li>
 
     <!-- Logout -->

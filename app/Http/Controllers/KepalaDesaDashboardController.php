@@ -6,7 +6,7 @@ use App\Models\Pengaduan;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
-class AdminDashboardController extends Controller
+class KepalaDesaDashboardController extends Controller
 {
     public function index()
     {
@@ -31,7 +31,7 @@ class AdminDashboardController extends Controller
         $monthlyData[] = $count;
         }
 
-        return view('admin.dashboard', compact(
+        return view('kepala_desa.dashboard', compact(
             'jumlahMenunggu',
             'jumlahTerverifikasi',
             'jumlahBerkas_tidak_valid',

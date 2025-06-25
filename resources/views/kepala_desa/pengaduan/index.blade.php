@@ -4,8 +4,7 @@
 
     <h1 class="text-main mb-2">Data Pengaduan</h1>
 
-
-    <form method="GET" action="{{ route('admin.pengaduan.index') }}" class="d-flex flex-wrap gap-2 mb-3">
+    <form method="GET" action="{{ route('kepala_desa.pengaduan.index') }}" class="d-flex flex-wrap gap-2 mb-3">
 
         {{-- Jumlah per halaman --}}
         <div class="flex-grow-1" style="min-width: 150px;">
@@ -20,7 +19,7 @@
         <div class="flex-grow-1" style="min-width: 180px;">
             <select name="status" class="form-select" onchange="this.form.submit()">
                 <option value="">-- Semua Status --</option>
-                @foreach (['menunggu', 'berkas tidak valid', 'terverifikasi', 'diproses', 'selesai', 'ditolak'] as $status)
+                @foreach (['terverifikasi', 'diproses', 'selesai', 'ditolak'] as $status)
                     <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
                         {{ ucfirst($status) }}
                     </option>
@@ -45,10 +44,10 @@
 
         {{-- Tombol Export --}}
         <div class="d-flex gap-2">
-            <a href="{{ route('admin.pengaduan.export.pdf', request()->query()) }}" class="btn btn-sm btn-danger">
+            <a href="{{ route('kepala_desa.pengaduan.export.pdf', request()->query()) }}" class="btn btn-sm btn-danger">
                 <i class="fas fa-file-pdf"></i> PDF
             </a>
-            <a href="{{ route('admin.pengaduan.export.excel', request()->query()) }}" class="btn btn-sm btn-success">
+            <a href="{{ route('kepala_desa.pengaduan.export.excel', request()->query()) }}" class="btn btn-sm btn-success">
                 <i class="fas fa-file-excel"></i> Excel
             </a>
         </div>
@@ -108,16 +107,16 @@
                         <td>
                         @php
                             $status = strtolower($item->status);
-                            $disableTombol = in_array($status, ['selesai', 'ditolak', 'diproses', 'terverifikasi']);
+                            $disableTombol = in_array($status, ['selesai', 'ditolak']);
                         @endphp
 
                         @if($disableTombol)
-                            <button class="btn btn-sm btn-secondary mb-1" disabled>Cek Berkas</button>
+                            <button class="btn btn-sm btn-secondary mb-1" disabled>Tanggapi</button>
                         @else
-                            <a href="{{ route('admin.pengaduan.tanggapan.create', $item->id) }}" class="btn btn-sm btn-primary mb-1">Cek Berkas</a>
+                            <a href="{{ route('kepala_desa.pengaduan.tanggapan.create', $item->id) }}" class="btn btn-sm btn-primary mb-1">Tanggapi</a>
                         @endif
 
-                            <a href="{{ route('admin.pengaduan.show', $item->id) }}" class="btn btn-info btn-sm mb-1">Detail</a>
+                            <a href="{{ route('kepala_desa.pengaduan.show', $item->id) }}" class="btn btn-info btn-sm mb-1">Detail</a>
                         </td>
                 </tr>
             @empty

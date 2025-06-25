@@ -9,6 +9,8 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\MasyarakatDashboardController;
 use App\Http\Controllers\PengaduanExportController;
 use App\Http\Controllers\UserExportController;
+use App\Http\Controllers\KepalaDesaDashboardController;
+
 
 
 
@@ -25,6 +27,8 @@ Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
         return redirect()->route('admin.dashboard');
     } elseif ($role === 'masyarakat') {
         return redirect()->route('masyarakat.dashboard');
+    }elseif ($role === 'kepala_desa') {
+        return redirect()->route('kepala_desa.dashboard');
     }
 
     abort(403);
@@ -71,9 +75,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/user/{id}/export/pdf', [UserController::class, 'exportDetailPdf'])
         ->name('users.export.detail.pdf');
 
-
-
-
 });
 
 // Route untuk masyarakat
@@ -94,6 +95,26 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->name('masy
     // Fitur Export
     Route::get('/pengaduan/{id}/export/pdf', [PengaduanController::class, 'exportDetailPdfMasyarakat'])
     ->name('pengaduan.export.detail.pdf');
+
+});
+
+// Route untuk Kepala Desa
+Route::middleware(['auth', 'role:kepala_desa'])->prefix('kepala-desa')->name('kepala_desa.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [KepalaDesaDashboardController::class, 'index'])->name('dashboard');
+    //Pengaduan
+    Route::get('/pengaduan', [PengaduanController::class, 'indexKepalaDesa'])->name('pengaduan.index');
+    Route::get('/pengaduan/{pengaduan}', [PengaduanController::class, 'show'])->name('pengaduan.show');
+    // Tanggapan
+    Route::get('/pengaduan/{id}/tanggapan', [PengaduanController::class, 'createTanggapan'])->name('pengaduan.tanggapan.create');
+    Route::post('/pengaduan/{id}/tanggapan', [PengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan.store');
+    // Route export PDF dan excel pengaduan
+    Route::get('/pengaduan/export/pdf', [PengaduanExportController::class, 'exportPdf'])->name('pengaduan.export.pdf');
+    Route::get('/pengaduan/export/excel', [PengaduanExportController::class, 'exportExcel'])->name('pengaduan.export.excel');
+    // Route export PDF detail pengaduan
+    Route::get('/pengaduan/{id}/export/pdf', [PengaduanController::class, 'exportDetailPdf'])
+        ->name('pengaduan.export.detail.pdf');
+
 
 });
 

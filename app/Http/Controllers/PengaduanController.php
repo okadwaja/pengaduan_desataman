@@ -49,6 +49,10 @@ class PengaduanController extends Controller
                 $query->where('status', $request->status);
             }
 
+            if ($request->filled('start_date') && $request->filled('end_date')) {
+                $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+            }
+
             // Jumlah data per halaman
             $perPage = $request->get('perPage', 10);
 
@@ -58,11 +62,9 @@ class PengaduanController extends Controller
             return view('admin.pengaduan.index', compact('pengaduan', 'user'));
         } else {
             // Untuk masyarakat tetap gunakan pagination dan perPage
-            $perPage = $request->get('perPage', 10);
             $pengaduan = Pengaduan::where('user_id', $user->id)
                 ->latest()
-                ->paginate($perPage)
-                ->appends($request->all());
+                ->get();
 
             return view('masyarakat.pengaduan.index', compact('pengaduan', 'user'));
         }
@@ -89,6 +91,10 @@ class PengaduanController extends Controller
             $query->where('status', $request->status);
         }
 
+        if (auth()->user()->role === 'kepala_desa') {
+            $query->whereIn('status', ['terverifikasi', 'diproses', 'selesai', 'ditolak']);
+        }
+
         $pengaduan = $query->latest()->get();
 
         $pdf = Pdf::loadView('admin.pengaduan.export_pdf', compact('pengaduan'));
@@ -106,6 +112,20 @@ class PengaduanController extends Controller
     public function exportDetailPdf($id)
     {
         $pengaduan = Pengaduan::with(['user', 'tanggapan'])->findOrFail($id);
+        $user = auth()->user();
+
+        // Hanya admin dan kepala desa yang boleh mengakses
+        if (!in_array($user->role, ['admin', 'kepala_desa'])) {
+            abort(403);
+        }
+
+        // Jika kepala desa, hanya boleh akses status tertentu
+        if (
+            $user->role === 'kepala_desa' &&
+            !in_array($pengaduan->status, ['terverifikasi', 'diproses', 'selesai', 'ditolak'])
+        ) {
+            abort(403);
+        }
 
         $pdf = Pdf::loadView('admin.pengaduan.detail_pdf', compact('pengaduan'))
             ->setPaper('A4', 'portrait');
@@ -252,12 +272,21 @@ class PengaduanController extends Controller
             abort(403); // Forbidden
         }
 
-        // Arahkan view berdasarkan role
+        // Admin lihat semua
         if ($user->role === 'admin') {
-            $pengaduan = Pengaduan::with('user', 'tanggapan')->findOrFail($id);
             return view('admin.pengaduan.show', compact('pengaduan'));
         }
 
+        // Kepala Desa hanya lihat pengaduan tertentu
+        if ($user->role === 'kepala_desa') {
+            if (in_array($pengaduan->status, ['terverifikasi', 'diproses', 'selesai', 'ditolak'])) {
+                return view('kepala_desa.pengaduan.show', compact('pengaduan'));
+            } else {
+                abort(403);
+            }
+        }
+
+        // Default: masyarakat
         return view('masyarakat.pengaduan.show', compact('pengaduan'));
     }
 
@@ -275,7 +304,7 @@ class PengaduanController extends Controller
         }
 
         // Cek status pengaduan
-        if ($pengaduan->status !== 'menunggu') {
+        if (!in_array($pengaduan->status, ['menunggu', 'berkas tidak valid'])) {
             return redirect()->back()->with('error', 'Pengaduan hanya bisa diedit ketika belum ditanggapi.');
         }
 
@@ -293,8 +322,8 @@ class PengaduanController extends Controller
             return redirect()->back()->with('error', 'Anda tidak dapat mengedit pengaduan ini.');
         }
 
-        if ($pengaduan->status !== 'menunggu') {
-            return redirect()->back()->with('error', 'Pengaduan hanya bisa diedit saat status masih menunggu.');
+        if (!in_array($pengaduan->status, ['menunggu', 'berkas tidak valid'])) {
+            return redirect()->back()->with('error', 'Pengaduan hanya bisa diedit ketika belum ditanggapi.');
         }
 
         $validatedData = $request->validate([
@@ -364,11 +393,19 @@ class PengaduanController extends Controller
             }
         }
 
-        $pengaduan->update([
+        // Perbarui data
+        $dataToUpdate = [
             'judul' => $validatedData['judul'],
             'isi' => $validatedData['isi'],
             'foto' => $fotoPath,
-        ]);
+        ];
+
+        // Jika sebelumnya statusnya "berkas tidak valid", ubah ke "menunggu"
+        if ($pengaduan->status === 'berkas tidak valid') {
+            $dataToUpdate['status'] = 'menunggu';
+        }
+
+        $pengaduan->update($dataToUpdate);
 
         return redirect()->route('masyarakat.pengaduan.index')->with('success', 'Pengaduan berhasil diperbarui.');
     }
@@ -388,7 +425,7 @@ class PengaduanController extends Controller
         return redirect()->back()->with('error', 'Anda tidak dapat menghapus pengaduan ini.');
     }
 
-    if ($pengaduan->status !== 'menunggu') {
+            if (!in_array($pengaduan->status, ['menunggu', 'berkas tidak valid'])) {
         return redirect()->back()->with('error', 'Pengaduan hanya bisa dihapus ketika belum ditanggapi.');
     }
 
@@ -415,7 +452,7 @@ class PengaduanController extends Controller
 
         $request->validate([
             'komentar' => 'required|string',
-            'status' => 'required|in:menunggu,diproses,selesai,ditolak',
+            'status' => 'required|in:menunggu,diproses,selesai,ditolak,terverifikasi,berkas tidak valid',
             'foto' => 'nullable|file|mimes:jpg,jpeg,png,heic,heif|max:10240',
         ]);
 
@@ -506,7 +543,9 @@ class PengaduanController extends Controller
 
         \Log::info('Tanggapan berhasil disimpan');
 
-        return redirect()->route('admin.pengaduan.index')->with('success', 'Tanggapan berhasil disimpan.');
+        $user = auth()->user();
+        $route = $user->role === 'kepala_desa' ? 'kepala_desa.pengaduan.index' : 'admin.pengaduan.index';
+        return redirect()->route($route)->with('success', 'Tanggapan berhasil disimpan.');
     }
 
     private function fixImageOrientation(\Imagick $image)
@@ -527,6 +566,46 @@ class PengaduanController extends Controller
 
         $image->setImageOrientation(\Imagick::ORIENTATION_TOPLEFT);
     }
+
+    public function indexKepalaDesa(Request $request)
+    {
+        \Carbon\Carbon::setLocale('id');
+        $user = auth()->user();
+
+        $query = Pengaduan::with('user')
+            ->whereIn('status', ['terverifikasi', 'diproses', 'selesai', 'ditolak']);
+
+        // Pencarian (search)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                ->orWhere('isi', 'like', "%{$search}%")
+                ->orWhereHas('user', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        // Filter status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+        }
+
+        // Jumlah data per halaman (default 10)
+        $perPage = $request->get('perPage', 10);
+
+        // Ambil data dengan pagination, dan pertahankan query string saat berpindah halaman
+        $pengaduan = $query->latest()->paginate($perPage)->appends($request->all());
+
+        return view('kepala_desa.pengaduan.index', compact('pengaduan', 'user'));
+    }
+
+
 
 
 }

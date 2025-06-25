@@ -5,7 +5,7 @@
     <h1>Detail Pengaduan</h1>
 
     <div class="d-flex justify-content-end">
-        <a href="{{ route('masyarakat.pengaduan.export.detail.pdf', $pengaduan->id) }}" class="btn btn-sm btn-danger mb-1" target="_blank">
+        <a href="{{ route('kepala_desa.pengaduan.export.detail.pdf', $pengaduan->id) }}" class="btn btn-sm btn-danger mb-1" target="_blank">
             <i class="fas fa-file-pdf"></i> Download PDF
         </a>
     </div>
@@ -25,12 +25,12 @@
             <div class="col-md-8">
 
                 <div class="row mb-2">
-                    <div class="col-sm-2 fw-semibold"><strong>Judul</strong></div>
+                    <div class="col-sm-3 fw-semibold"><strong>Judul</strong></div>
                     <div class="col-sm-9">: {{ $pengaduan->judul }}</div>
                 </div>
 
                 <div class="row mb-2">
-                    <div class="col-sm-2 fw-semibold"><strong>Isi</strong></div>
+                    <div class="col-sm-3 fw-semibold"><strong>Isi</strong></div>
                     <div class="col-sm-9">: {{ $pengaduan->isi }}</div>
                 </div>
 
@@ -48,16 +48,43 @@
                 @endphp
 
                 <div class="row mb-2">
-                    <div class="col-sm-2 fw-semibold"><strong>Status</strong></div>
+                    <div class="col-sm-3 fw-semibold"><strong>Status</strong></div>
                     <div class="col-sm-9">: <span class="badge bg-{{ $badgeClass }} text-white">{{ ucfirst($pengaduan->status) }}</span></div>
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col-sm-2 fw-semibold"><strong>Waktu</strong></div>
+                    <div class="col-sm-3 fw-semibold"><strong>Waktu</strong></div>
                     <div class="col-sm-9">: {{ $pengaduan->created_at->translatedFormat('d M Y H:i') }} WITA</div>
                 </div>
 
-                
+                <hr>
+                <br>
+
+                <div class="row mb-2">
+                    <div class="col-sm-3 fw-semibold"><strong>Data Pengadu:</strong></div>
+                </div>
+
+                @php $user = $pengaduan->user; @endphp
+                <div class="row mb-2">
+                    <div class="col-sm-3 fw-semibold"><strong>Nama</strong></div>
+                    <div class="col-sm-9">: {{ $user->name }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-3 fw-semibold"><strong>Alamat</strong></div>
+                    <div class="col-sm-9">: {{ $user->alamat }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-3 fw-semibold"><strong>Email</strong></div>
+                    <div class="col-sm-9">: {{ $user->email }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-3 fw-semibold"><strong>NIK</strong></div>
+                    <div class="col-sm-9">: {{ $user->nik }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 fw-semibold"><strong>No. Telp</strong></div>
+                    <div class="col-sm-9">: {{ $user->no_telp }}</div>
+                </div>
             </div>
         </div>
     </div>
@@ -88,7 +115,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-3 fw-semibold"><strong>Waktu</strong></div>
-                        <div class="col-sm-9">: {{ \Carbon\Carbon::parse($pengaduan->tanggapan->updated_at)->translatedFormat('H:i, d F Y') }}</div>
+                        <div class="col-sm-9">: {{ \Carbon\Carbon::parse($pengaduan->tanggapan->updated_at)->translatedFormat('d M Y H:i') }} WITA</div>
                     </div>
                 </div>
             </div>
@@ -102,8 +129,24 @@
     </div>
 @endif
 
-    <div class="mt-2">
-        <a href="{{ route('masyarakat.pengaduan.index') }}" class="btn btn-secondary">Kembali</a>
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mt-2">
+        <a href="{{ route('kepala_desa.pengaduan.index') }}" class="btn btn-secondary">Kembali</a>
+
+        @php
+            $status = strtolower($pengaduan->status);
+            $isEditable = in_array($status, ['diproses', 'terverifikasi']);
+        @endphp
+
+        @if($isEditable)
+            <a href="{{ route('kepala_desa.pengaduan.tanggapan.create', $pengaduan->id) }}" class="btn btn-primary">
+                {{ $status === 'terverifikasi' ? 'Tanggapi' : 'Update Tanggapan' }}
+            </a>
+        @else
+            <button class="btn btn-secondary" disabled>
+                Update Tanggapan
+            </button>
+        @endif
+
     </div>
 </div>
 @endsection
