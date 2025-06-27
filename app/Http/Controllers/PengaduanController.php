@@ -17,6 +17,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PengaduanExport;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
+
 
 
 class PengaduanController extends Controller
@@ -92,7 +94,7 @@ class PengaduanController extends Controller
         }
 
         if (auth()->user()->role === 'kepala_desa') {
-            $query->whereIn('status', ['terverifikasi', 'diproses', 'selesai', 'ditolak']);
+            $query->whereIn('status', ['terverifikasi', 'diproses', 'dieksekusi', 'ditolak', 'ditunda', 'tidak dieksekusi']);
         }
 
         $pengaduan = $query->latest()->get();
@@ -122,7 +124,7 @@ class PengaduanController extends Controller
         // Jika kepala desa, hanya boleh akses status tertentu
         if (
             $user->role === 'kepala_desa' &&
-            !in_array($pengaduan->status, ['terverifikasi', 'diproses', 'selesai', 'ditolak'])
+            !in_array($pengaduan->status, ['terverifikasi', 'diproses', 'dieksekusi', 'ditolak' , 'ditunda', 'tidak dieksekusi'])
         ) {
             abort(403);
         }
@@ -279,7 +281,7 @@ class PengaduanController extends Controller
 
         // Kepala Desa hanya lihat pengaduan tertentu
         if ($user->role === 'kepala_desa') {
-            if (in_array($pengaduan->status, ['terverifikasi', 'diproses', 'selesai', 'ditolak'])) {
+            if (in_array($pengaduan->status, ['terverifikasi', 'diproses', 'dieksekusi', 'ditolak', 'ditunda', 'tidak dieksekusi'])) {
                 return view('kepala_desa.pengaduan.show', compact('pengaduan'));
             } else {
                 abort(403);
@@ -452,7 +454,16 @@ class PengaduanController extends Controller
 
         $request->validate([
             'komentar' => 'required|string',
-            'status' => 'required|in:menunggu,diproses,selesai,ditolak,terverifikasi,berkas tidak valid',
+            'status' => ['required', Rule::in([
+                'menunggu',
+                'diproses',
+                'dieksekusi',
+                'ditolak',
+                'terverifikasi',
+                'berkas tidak valid',
+                'ditunda',
+                'tidak dieksekusi'
+            ])],
             'foto' => 'nullable|file|mimes:jpg,jpeg,png,heic,heif|max:10240',
         ]);
 
@@ -573,7 +584,7 @@ class PengaduanController extends Controller
         $user = auth()->user();
 
         $query = Pengaduan::with('user')
-            ->whereIn('status', ['terverifikasi', 'diproses', 'selesai', 'ditolak']);
+            ->whereIn('status', ['terverifikasi', 'diproses', 'dieksekusi', 'ditolak', 'ditunda', 'tidak dieksekusi']);
 
         // Pencarian (search)
         if ($request->filled('search')) {

@@ -14,8 +14,10 @@ class AdminDashboardController extends Controller
         $jumlahTerverifikasi = Pengaduan::where('status', 'terverifikasi')->count();
         $jumlahBerkas_tidak_valid = Pengaduan::where('status', 'berkas tidak valid')->count();
         $jumlahDiproses = Pengaduan::where('status', 'diproses')->count();
-        $jumlahSelesai = Pengaduan::where('status', 'selesai')->count();
+        $jumlahDieksekusi = Pengaduan::where('status', 'dieksekusi')->count();
         $jumlahDitolak = Pengaduan::where('status', 'ditolak')->count();
+        $jumlahDitunda = Pengaduan::where('status', 'ditunda')->count();
+        $jumlahTidak_dieksekusi = Pengaduan::where('status', 'tidak dieksekusi')->count();
         $jumlahTotal = Pengaduan::count();
 
         $monthlyData = [];
@@ -36,7 +38,9 @@ class AdminDashboardController extends Controller
             'jumlahTerverifikasi',
             'jumlahBerkas_tidak_valid',
             'jumlahDiproses',
-            'jumlahSelesai',
+            'jumlahDieksekusi',
+            'jumlahDitunda',
+            'jumlahTidak_dieksekusi',
             'jumlahDitolak',
             'jumlahTotal',
             'monthlyData',

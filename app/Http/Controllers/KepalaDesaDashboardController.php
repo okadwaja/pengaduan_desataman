@@ -14,9 +14,11 @@ class KepalaDesaDashboardController extends Controller
         $jumlahTerverifikasi = Pengaduan::where('status', 'terverifikasi')->count();
         $jumlahBerkas_tidak_valid = Pengaduan::where('status', 'berkas tidak valid')->count();
         $jumlahDiproses = Pengaduan::where('status', 'diproses')->count();
-        $jumlahSelesai = Pengaduan::where('status', 'selesai')->count();
+        $jumlahDieksekusi = Pengaduan::where('status', 'dieksekusi')->count();
+        $jumlahDitunda = Pengaduan::where('status', 'ditunda')->count();
+        $jumlahTidak_dieksekusi = Pengaduan::where('status', 'tidak dieksekusi')->count();
         $jumlahDitolak = Pengaduan::where('status', 'ditolak')->count();
-        $jumlahTotal = Pengaduan::count();
+        $jumlahTotal = Pengaduan::whereNotIn('status', ['menunggu', 'berkas tidak valid'])->count();
 
         $monthlyData = [];
         $months = [];
@@ -25,6 +27,7 @@ class KepalaDesaDashboardController extends Controller
             $month = Carbon::now()->subMonths($i)->format('Y-m');
             $count = Pengaduan::whereYear('created_at', Carbon::parse($month)->year)
                 ->whereMonth('created_at', Carbon::parse($month)->month)
+                ->whereNotIn('status', ['menunggu', 'berkas tidak valid'])
                 ->count();
 
         $months[] = Carbon::parse($month)->translatedFormat('F Y');
@@ -36,7 +39,9 @@ class KepalaDesaDashboardController extends Controller
             'jumlahTerverifikasi',
             'jumlahBerkas_tidak_valid',
             'jumlahDiproses',
-            'jumlahSelesai',
+            'jumlahDieksekusi',
+            'jumlahDitunda',
+            'jumlahTidak_dieksekusi',
             'jumlahDitolak',
             'jumlahTotal',
             'monthlyData',

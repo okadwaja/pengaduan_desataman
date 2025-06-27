@@ -39,7 +39,9 @@
                     $badgeClass = match($status) {
                         'menunggu' => 'warning',
                         'diproses' => 'primary',
-                        'selesai'  => 'success',
+                        'dieksekusi'  => 'success',
+                        'tidak dieksekusi' => 'danger',
+                        'ditunda' => 'dark',
                         'ditolak'  => 'danger',
                         'terverifikasi' => 'info',
                         'berkas tidak valid' => 'danger',
@@ -134,7 +136,7 @@
 
         @php
             $status = strtolower($pengaduan->status);
-            $isEditable = in_array($status, ['diproses', 'terverifikasi']);
+            $isEditable = in_array($status, ['diproses', 'terverifikasi', 'ditunda']);
         @endphp
 
         @if($isEditable)

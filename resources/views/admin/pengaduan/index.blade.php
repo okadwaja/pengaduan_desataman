@@ -20,7 +20,7 @@
         <div class="flex-grow-1" style="min-width: 180px;">
             <select name="status" class="form-select" onchange="this.form.submit()">
                 <option value="">-- Semua Status --</option>
-                @foreach (['menunggu', 'berkas tidak valid', 'terverifikasi', 'diproses', 'selesai', 'ditolak'] as $status)
+                @foreach (['menunggu', 'berkas tidak valid', 'terverifikasi', 'diproses', 'dieksekusi', 'ditolak', 'ditunda', 'tidak dieksekusi'] as $status)
                     <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
                         {{ ucfirst($status) }}
                     </option>
@@ -87,10 +87,12 @@
                         $badgeClass = match($status) {
                             'menunggu' => 'warning',
                             'diproses' => 'primary',
-                            'selesai'  => 'success',
+                            'dieksekusi'  => 'success',
                             'ditolak'  => 'danger',
                             'terverifikasi' => 'info',
                             'berkas tidak valid' => 'danger',
+                            'tidak dieksekusi' => 'danger',
+                            'ditunda' => 'dark',
                             default    => 'secondary'
                         };
                     @endphp
@@ -108,7 +110,7 @@
                         <td>
                         @php
                             $status = strtolower($item->status);
-                            $disableTombol = in_array($status, ['selesai', 'ditolak', 'diproses', 'terverifikasi']);
+                            $disableTombol = in_array($status, ['dieksekusi', 'ditolak', 'diproses', 'terverifikasi', 'ditunda', 'tidak dieksekusi']);
                         @endphp
 
                         @if($disableTombol)

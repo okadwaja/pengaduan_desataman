@@ -39,7 +39,9 @@
                     $badgeClass = match($status) {
                         'menunggu' => 'warning',
                         'diproses' => 'primary',
-                        'selesai'  => 'success',
+                        'dieksekusi'  => 'success',
+                        'tidak dieksekusi' => 'danger',
+                        'ditunda' => 'dark',
                         'ditolak'  => 'danger',
                         'terverifikasi' => 'info',
                         'berkas tidak valid' => 'danger',

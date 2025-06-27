@@ -18,7 +18,9 @@ class MasyarakatDashboardController extends Controller
         $jumlahTerverifikasi = Pengaduan::where('status', 'terverifikasi')->count();
         $jumlahBerkas_tidak_valid = Pengaduan::where('status', 'berkas tidak valid')->count();
         $jumlahDiproses = Pengaduan::where('user_id', $user->id)->where('status', 'diproses')->count();
-        $jumlahSelesai = Pengaduan::where('user_id', $user->id)->where('status', 'selesai')->count();
+        $jumlahDieksekusi = Pengaduan::where('user_id', $user->id)->where('status', 'dieksekusi')->count();
+        $jumlahDitunda = Pengaduan::where('status', 'ditunda')->count();
+        $jumlahTidak_dieksekusi = Pengaduan::where('status', 'tidak dieksekusi')->count();
         $jumlahDitolak = Pengaduan::where('user_id', $user->id)->where('status', 'ditolak')->count();
 
         return view('masyarakat.dashboard', compact(
@@ -27,7 +29,9 @@ class MasyarakatDashboardController extends Controller
             'jumlahTerverifikasi',
             'jumlahBerkas_tidak_valid',
             'jumlahDiproses',
-            'jumlahSelesai',
+            'jumlahDieksekusi',
+            'jumlahDitunda',
+            'jumlahTidak_dieksekusi',
             'jumlahDitolak'
         ));
     }

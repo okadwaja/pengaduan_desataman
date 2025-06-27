@@ -5,10 +5,34 @@
     @php
         $user = auth()->user();
         $isKepalaDesa = $user->role === 'kepala_desa';
+
+        // Default
+        $judulKades = 'Tanggapi Pengaduan';
+        $labelKomentar = 'Komentar Tanggapan';
+        $statusOptions = [];
+
+        if ($isKepalaDesa) {
+            if ($pengaduan->status === 'terverifikasi') {
+                $judulKades = 'Pemeriksaan ke Lapangan';
+                $labelKomentar = 'Komentar';
+                $statusOptions = ['diproses' => 'Diproses', 'ditolak' => 'Ditolak'];
+            } elseif (in_array($pengaduan->status, ['diproses', 'ditunda'])) {
+                $judulKades = 'Pengambilan Keputusan';
+                $labelKomentar = 'Analisis Keputusan';
+                $statusOptions = [
+                    'dieksekusi' => 'Dieksekusi',
+                    'ditunda' => 'Ditunda',
+                    'tidak dieksekusi' => 'Tidak Dieksekusi'
+                ];
+            } else {
+                $statusOptions = ['diproses' => 'Diproses', 'ditolak' => 'Ditolak']; // fallback
+            }
+        }
     @endphp
 
+
 <div class="container text-main">
-    <h1>{{ $isKepalaDesa ? 'Tanggapi Pengaduan' : 'Verifikasi Pengaduan' }}</h1>
+    <h1>{{ $isKepalaDesa ? $judulKades : 'Verifikasi Pengaduan' }}</h1>
 
     <div class="card mt-3 border-left-main">
         <div class="card-body">
@@ -21,7 +45,7 @@
         @csrf
 
         <div class="form-group mb-3">
-            <label><strong>{{ $isKepalaDesa ? 'Komentar Tanggapan' : 'Komentar Verifikasi' }}</strong></label>
+            <label><strong>{{ $isKepalaDesa ? $labelKomentar : 'Pesan' }}</strong></label>
             <textarea name="komentar" class="form-control border-left-main" rows="4" required></textarea>
         </div>
 
@@ -29,17 +53,18 @@
             <label><strong>Status Pengaduan</strong></label>
             <select name="status" class="form-control border-left-main" required>
                 @if ($isKepalaDesa)
-                    <option value="diproses" {{ $pengaduan->status === 'diproses' ? 'selected' : '' }}>Diproses</option>
-                    <option value="selesai" {{ $pengaduan->status === 'selesai' ? 'selected' : '' }}>Selesai</option>
-                    <option value="ditolak" {{ $pengaduan->status === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                    @foreach ($statusOptions as $value => $label)
+                        <option value="{{ $value }}" {{ $pengaduan->status === $value ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
                 @else
                     <option value="terverifikasi" {{ $pengaduan->status === 'terverifikasi' ? 'selected' : '' }}>Terverifikasi</option>
                     <option value="berkas tidak valid" {{ $pengaduan->status === 'berkas tidak valid' ? 'selected' : '' }}>Berkas Tidak Valid</option>
                 @endif
             </select>
+
         </div>
 
-        @if ($isKepalaDesa)
+        @if ($isKepalaDesa && in_array($pengaduan->status, ['diproses', 'ditunda']))
         <div class="form-group mb-3">
             <label><strong>Foto Tanggapan (Opsional)</strong></label>
             <input type="file" name="foto" class="form-control" accept="image/*,.heic,.heif" onchange="previewImage(event)">
