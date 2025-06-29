@@ -85,7 +85,7 @@
         <!-- Carousel Background -->
         <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
             <div class="carousel-inner">
-                <div class="carousel-item active">
+                <div class="carousel-item">
                     <img src="{{ asset('storage/slide/slide1.jpg') }}" class="d-block w-100" alt="Slide 1">
                 </div>
                 <div class="carousel-item">
@@ -108,6 +108,9 @@
                 </div>
                 <div class="carousel-item">
                     <img src="{{ asset('storage/slide/slide8.jpg') }}" class="d-block w-100" alt="Slide 8">
+                </div>
+                <div class="carousel-item active">
+                    <img src="{{ asset('storage/slide/slide9.jpg') }}" class="d-block w-100" alt="Slide 8">
                 </div>
             </div>
         </div>
