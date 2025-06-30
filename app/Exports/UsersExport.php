@@ -22,23 +22,27 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping, WithStyl
 
     public function collection()
     {
-        $query = User::where('role', '!=', 'admin');
+        $query = User::with('masyarakat')->where('role', 'masyarakat');
 
         if ($this->request->filled('alamat')) {
-            $query->where('alamat', $this->request->alamat);
+            $query->whereHas('masyarakat', function ($q) {
+                $q->where('alamat', $this->request->alamat);
+            });
         }
 
         if ($this->request->filled('search')) {
             $search = $this->request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('nik', 'like', "%{$search}%")
-                    ->orWhere('no_telp', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhereHas('masyarakat', function ($q2) use ($search) {
+                        $q2->where('nik', 'like', "%{$search}%")
+                            ->orWhere('no_telp', 'like', "%{$search}%");
+                    });
             });
         }
 
-        return $query->latest()->get();
+        return $query->latest()->get(); // Kembalikan object, BUKAN array
     }
 
     public function headings(): array
@@ -50,6 +54,7 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping, WithStyl
             'NIK',
             'No Telepon',
             'Alamat',
+            'Tanggal Daftar',
         ];
     }
 
@@ -62,16 +67,17 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping, WithStyl
             $i,
             $user->name,
             $user->email,
-            "'" . $user->nik,
-            "'" . $user->no_telp,
-            $user->alamat,
+            "'" . ($user->masyarakat->nik ?? '-'),
+            "'" . ($user->masyarakat->no_telp ?? '-'),
+            $user->masyarakat->alamat ?? '-',
+            $user->created_at->format('d/m/Y H:i'),
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
         return [
-            1 => ['font' => ['bold' => true]], // Bold header
+            1 => ['font' => ['bold' => true]],
         ];
     }
 }

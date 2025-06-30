@@ -13,22 +13,26 @@ class UserController extends Controller
     {
         \Carbon\Carbon::setLocale('id');
 
-        $query = User::where('role', '!=', 'admin');
+        $query = User::with('masyarakat')->where('role', 'masyarakat');
 
-        // Search by name, nik, or email
+        // Search by name, nik, email, or no_telp
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('nik', 'like', "%{$search}%")
-                    ->orWhere('no_telp', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhereHas('masyarakat', function ($q2) use ($search) {
+                    $q2->where('nik', 'like', "%{$search}%")
+                        ->orWhere('no_telp', 'like', "%{$search}%");
+                });
             });
         }
 
         // Filter by alamat
         if ($request->filled('alamat')) {
-            $query->where('alamat', $request->alamat);
+            $query->whereHas('masyarakat', function ($q) use ($request) {
+                $q->where('alamat', $request->alamat);
+            });
         }
 
         // Jumlah data per halaman

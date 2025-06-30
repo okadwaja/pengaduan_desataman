@@ -50,4 +50,20 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function masyarakat()
+    {
+        return $this->hasOne(Masyarakat::class);
+    }
+
+    public function admin()
+    {
+        return $this->hasOne(Admin::class);
+    }
+
+    public function kepalaDesa()
+    {
+        return $this->hasOne(KepalaDesa::class);
+    }
+
 }

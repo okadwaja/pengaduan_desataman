@@ -30,7 +30,18 @@
     <div class="row justify-content-center">
         <!-- Foto Profil -->
         <div class="col-12 col-md-6 mb-4 text-center">
-            <img src="{{ asset('storage/foto_profil/' . $user->foto) }}" 
+            @php
+                $foto = 'default.png';
+                $user = Auth::user();
+                if ($user->role === 'masyarakat') {
+                    $foto = $user->masyarakat->foto ?? 'default.png';
+                } elseif ($user->role === 'admin') {
+                    $foto = $user->admin->foto ?? 'default.png';
+                } elseif ($user->role === 'kepala_desa') {
+                    $foto = $user->kepalaDesa->foto ?? 'default.png';
+                }
+            @endphp
+            <img src="{{ asset('storage/foto_profil/' . $foto) }}"
                 class="img-thumbnail rounded-circle mx-auto" 
                 style="width: 150px; height: 150px; object-fit: cover;" 
                 alt="Foto Profil">
@@ -44,13 +55,13 @@
                         <strong>Nama:</strong> <span class="text-break">{{ $user->name }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                        <strong>NIK:</strong> <span class="text-break">{{ $user->nik }}</span>
+                        <strong>NIK:</strong> <span class="text-break">{{ $user->masyarakat->nik ?? '-' }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                        <strong>No Telepon:</strong> <span class="text-break">{{ $user->no_telp }}</span>
+                        <strong>No Telepon:</strong> <span class="text-break">{{ $user->masyarakat->no_telp ?? '-' }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                        <strong>Alamat:</strong> <span class="text-break">{{ $user->alamat }}</span>
+                        <strong>Alamat:</strong> <span class="text-break">{{ $user->masyarakat->alamat ?? '-' }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                         <strong>Email:</strong> <span class="text-break">{{ $user->email }}</span>

@@ -20,15 +20,15 @@ class ProfileUpdateRequest extends FormRequest
             'email' => [
                 'required',
                 'string',
-                'lowercase',
                 'email',
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'alamat' => ['required', 'string', 'max:255'],
-            'nik' => ['required', 'string', 'max:20'],
-            'no_telp' => ['required', 'string', 'max:20'],
-            'foto' => ['nullable', 'image', 'max:5048'], // max 5MB
+            'nik' => ['required', 'digits_between:12,20'],
+            'no_telp' => ['required', 'regex:/^[0-9+\-\s()]{8,20}$/'],
+            'foto' => ['nullable', 'image', 'max:5048'],
+            'cropped_image' => ['nullable', 'string'], // Tambahan agar validasi tidak error saat pakai crop
         ];
     }
 }

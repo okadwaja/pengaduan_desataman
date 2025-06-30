@@ -8,7 +8,18 @@
 
         {{-- Tampilkan foto profil --}}
         <div class="col-12 col-md-6 mb-4 text-center">
-            <img src="{{ asset('storage/foto_profil/' . $user->foto) }}"
+            @php
+                $foto = 'default.png';
+                $user = Auth::user();
+                if ($user->role === 'masyarakat') {
+                    $foto = $user->masyarakat->foto ?? 'default.png';
+                } elseif ($user->role === 'admin') {
+                    $foto = $user->admin->foto ?? 'default.png';
+                } elseif ($user->role === 'kepala_desa') {
+                    $foto = $user->kepalaDesa->foto ?? 'default.png';
+                }
+            @endphp
+            <img src="{{ asset('storage/foto_profil/' . $foto) }}"
             alt="Foto Profil"
             class="img-thumbnail rounded-circle mx-auto"
             style="width: 150px; height: 150px; object-fit: cover;"
@@ -57,13 +68,13 @@
                     {{-- NIK --}}
                     <div class="form-group mb-3">
                         <label for="nik" class="form-label">NIK</label>
-                        <input type="text" id="nik" name="nik" class="form-control border-left-main" value="{{ old('nik', $user->nik) }}" required>
+                        <input type="text" id="nik" name="nik" class="form-control border-left-main" value="{{ old('nik', $user->masyarakat->nik ?? '') }}" required>
                     </div>
 
                     {{-- No Telepon --}}
                     <div class="form-group mb-3">
                         <label for="no_telp" class="form-label">No Telepon</label>
-                        <input type="text" id="no_telp" name="no_telp" class="form-control border-left-main" value="{{ old('no_telp', $user->no_telp) }}" required>
+                        <input type="text" id="no_telp" name="no_telp" class="form-control border-left-main" value="{{ old('no_telp', $user->masyarakat->no_telp ?? '') }}" required>
                     </div>
 
                     {{-- Alamat --}}
@@ -75,7 +86,7 @@
                                 'Br. Jempeng Kauh', 'Br. Ketogan', 'Br. Mambul', 'Br. Pegongan',
                                 'Br. Raketan', 'Br. Sukajati', 'Br. Tabah', 'Br. Tebejero'
                             ] as $alamat)
-                                <option value="{{ $alamat }}" {{ $user->alamat == $alamat ? 'selected' : '' }}>
+                                <option value="{{ $alamat }}" {{ ($user->masyarakat->alamat ?? '') == $alamat ? 'selected' : '' }}>
                                     {{ $alamat }}
                                 </option>
                             @endforeach

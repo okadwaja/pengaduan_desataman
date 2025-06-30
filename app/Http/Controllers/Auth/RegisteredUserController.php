@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Masyarakat;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -34,17 +35,21 @@ class RegisteredUserController extends Controller
             'alamat' => 'required|string|max:255',
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'nik' => ['required', 'digits:16'],
-            'no_telp' => ['required', 'string', 'max:20'],
+            'nik' => ['required', 'regex:/^[0-9]{16}$/', 'unique:masyarakat,nik'],
+            'no_telp' => ['required', 'regex:/^[0-9+\-\s()]{8,20}$/', 'max:20'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
-            'alamat' => $request->alamat,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+        ]);
+
+        Masyarakat::create([
+            'user_id' => $user->id,
             'nik' => $request->nik,
             'no_telp' => $request->no_telp,
+            'alamat' => $request->alamat,
             'foto' => 'default.png'
         ]);
 

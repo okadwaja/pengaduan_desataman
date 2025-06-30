@@ -56,11 +56,16 @@
     <div class="section">
         <div class="section-title">Data Pengaduan</div><hr>
 
-        <p><span class="label">Nama Pengirim:</span> {{ $pengaduan->user->name }}</p>
-        <p><span class="label">Email:</span> {{ $pengaduan->user->email }}</p>
-        <p><span class="label">NIK:</span> {{ $pengaduan->user->nik }}</p>
-        <p><span class="label">No Telepon:</span> {{ $pengaduan->user->no_telp }}</p>
-        <p><span class="label">Alamat:</span> {{ $pengaduan->user->alamat }}</p>
+        @php
+            $user = $pengaduan->user;
+            $masyarakat = $user->masyarakat ?? null;
+        @endphp
+
+        <p><span class="label">Nama Pengirim:</span> {{ $user->name }}</p>
+        <p><span class="label">Email:</span> {{ $user->email }}</p>
+        <p><span class="label">NIK:</span> {{ $masyarakat?->nik ?? '-' }}</p>
+        <p><span class="label">No Telepon:</span> {{ $masyarakat?->no_telp ?? '-' }}</p>
+        <p><span class="label">Alamat:</span> {{ $masyarakat?->alamat ?? '-' }}</p>
         <br>
         <p><span class="label">Judul Pengaduan:</span> {{ $pengaduan->judul }}</p>
         <p><span class="label">Isi:</span> {{ $pengaduan->isi }}</p>

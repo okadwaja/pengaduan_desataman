@@ -6,7 +6,10 @@
 
     <div class="row justify-content-center">
         <div class="col-md-6 mb-4">
-            <img src="{{ asset('storage/foto_profil/' . $user->foto) }}" 
+            @php
+                $masyarakat = $user->masyarakat;
+            @endphp
+            <img src="{{ asset('storage/foto_profil/' . ($masyarakat?->foto)) }}"
                 class="img-thumbnail rounded-circle mx-auto d-block" 
                 style="width: 150px; height: 150px; object-fit: cover;" 
                 alt="Foto Profil">
@@ -19,13 +22,13 @@
                         <strong>Nama:</strong> <span>{{ $user->name }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                        <strong>NIK:</strong> <span>{{ $user->nik }}</span>
+                        <strong>NIK:</strong> <span>{{ $masyarakat?->nik ?? '-' }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                        <strong>No Telepon:</strong> <span>{{ $user->no_telp }}</span>
+                        <strong>No Telepon:</strong> <span>{{ $masyarakat?->no_telp ?? '-' }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                        <strong>Alamat:</strong> <span>{{ $user->alamat }}</span>
+                        <strong>Alamat:</strong> <span>{{ $masyarakat?->alamat ?? '-' }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                         <strong>Email:</strong> <span>{{ $user->email }}</span>

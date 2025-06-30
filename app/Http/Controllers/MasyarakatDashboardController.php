@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Pengaduan;
 use Illuminate\Support\Facades\Auth;
 
-
 class MasyarakatDashboardController extends Controller
 {
     public function index()
@@ -15,12 +14,12 @@ class MasyarakatDashboardController extends Controller
 
         $jumlahTotal = Pengaduan::where('user_id', $user->id)->count();
         $jumlahMenunggu = Pengaduan::where('user_id', $user->id)->where('status', 'menunggu')->count();
-        $jumlahTerverifikasi = Pengaduan::where('status', 'terverifikasi')->count();
-        $jumlahBerkas_tidak_valid = Pengaduan::where('status', 'berkas tidak valid')->count();
+        $jumlahTerverifikasi = Pengaduan::where('user_id', $user->id)->where('status', 'terverifikasi')->count();
+        $jumlahBerkas_tidak_valid = Pengaduan::where('user_id', $user->id)->where('status', 'berkas tidak valid')->count();
         $jumlahDiproses = Pengaduan::where('user_id', $user->id)->where('status', 'diproses')->count();
         $jumlahDieksekusi = Pengaduan::where('user_id', $user->id)->where('status', 'dieksekusi')->count();
-        $jumlahDitunda = Pengaduan::where('status', 'ditunda')->count();
-        $jumlahTidak_dieksekusi = Pengaduan::where('status', 'tidak dieksekusi')->count();
+        $jumlahDitunda = Pengaduan::where('user_id', $user->id)->where('status', 'ditunda')->count();
+        $jumlahTidak_dieksekusi = Pengaduan::where('user_id', $user->id)->where('status', 'tidak dieksekusi')->count();
         $jumlahDitolak = Pengaduan::where('user_id', $user->id)->where('status', 'ditolak')->count();
 
         return view('masyarakat.dashboard', compact(

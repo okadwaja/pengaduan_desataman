@@ -11,12 +11,15 @@
     </thead>
     <tbody>
         @foreach($users as $index => $user)
+            @php
+                $masyarakat = $user->masyarakat;
+            @endphp
             <tr>
                 <td>{{ $index + 1 }}</td>
                 <td>{{ $user->name }}</td>
-                <td>{{ $user->nik }}</td>
-                <td>{{ $user->no_telp }}</td>
-                <td>{{ $user->alamat }}</td>
+                <td>{{ $masyarakat?->nik ?? '-' }}</td>
+                <td>{{ $masyarakat?->no_telp ?? '-' }}</td>
+                <td>{{ $masyarakat?->alamat ?? '-' }}</td>
                 <td>{{ $user->email }}</td>
             </tr>
         @endforeach

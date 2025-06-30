@@ -66,14 +66,17 @@
                     <div class="col-sm-3 fw-semibold"><strong>Data Pengadu:</strong></div>
                 </div>
 
-                @php $user = $pengaduan->user; @endphp
+                @php
+                    $user = $pengaduan->user;
+                    $masyarakat = $user->masyarakat ?? null;
+                @endphp
                 <div class="row mb-2">
                     <div class="col-sm-3 fw-semibold"><strong>Nama</strong></div>
                     <div class="col-sm-9">: {{ $user->name }}</div>
                 </div>
                 <div class="row mb-2">
                     <div class="col-sm-3 fw-semibold"><strong>Alamat</strong></div>
-                    <div class="col-sm-9">: {{ $user->alamat }}</div>
+                    <div class="col-sm-9">: {{ $masyarakat?->alamat ?? '-' }}</div>
                 </div>
                 <div class="row mb-2">
                     <div class="col-sm-3 fw-semibold"><strong>Email</strong></div>
@@ -81,11 +84,11 @@
                 </div>
                 <div class="row mb-2">
                     <div class="col-sm-3 fw-semibold"><strong>NIK</strong></div>
-                    <div class="col-sm-9">: {{ $user->nik }}</div>
+                    <div class="col-sm-9">: {{ $masyarakat?->nik ?? '-' }}</div>
                 </div>
                 <div class="row">
                     <div class="col-sm-3 fw-semibold"><strong>No. Telp</strong></div>
-                    <div class="col-sm-9">: {{ $user->no_telp }}</div>
+                    <div class="col-sm-9">: {{ $masyarakat?->no_telp ?? '-' }}</div>
                 </div>
             </div>
         </div>

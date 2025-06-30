@@ -56,17 +56,21 @@
     <div class="section">
         <div class="section-title">Data User</div><hr>
         <div class="row">
+            @php
+                $masyarakat = $user->masyarakat;
+            @endphp
+
             <div class="col-text">
                 <p><span class="label">Nama:</span> {{ $user->name }}</p>
                 <p><span class="label">Email:</span> {{ $user->email }}</p>
-                <p><span class="label">NIK:</span> {{ $user->nik }}</p>
-                <p><span class="label">No Telepon:</span> {{ $user->no_telp }}</p>
-                <p><span class="label">Alamat:</span> {{ $user->alamat }}</p>
+                <p><span class="label">NIK:</span> {{ $masyarakat?->nik ?? '-' }}</p>
+                <p><span class="label">No Telepon:</span> {{ $masyarakat?->no_telp ?? '-' }}</p>
+                <p><span class="label">Alamat:</span> {{ $masyarakat?->alamat ?? '-' }}</p>
                 <p><span class="label">Tanggal Terdaftar:</span> {{ $user->created_at->format('d/m/Y H:i') }} WITA</p>
             </div>
             <div class="col-image">
-                @if ($user->foto)
-                    <img class="image" src="{{ public_path('storage/foto_profil/' . $user->foto) }}" alt="Foto User">
+                @if ($masyarakat?->foto && file_exists(public_path('storage/foto_profil/' . $masyarakat->foto)))
+                    <img class="image" src="{{ public_path('storage/foto_profil/' . $masyarakat->foto) }}" alt="Foto User">
                 @else
                     <p>Tidak ada foto</p>
                 @endif

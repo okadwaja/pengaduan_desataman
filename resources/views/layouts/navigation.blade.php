@@ -16,8 +16,20 @@
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->name }}</span>
+                @php
+                    $foto = 'default.png';
+                    $user = Auth::user();
+                    if ($user->role === 'masyarakat') {
+                        $foto = $user->masyarakat->foto ?? 'default.png';
+                    } elseif ($user->role === 'admin') {
+                        $foto = $user->admin->foto ?? 'default.png';
+                    } elseif ($user->role === 'kepala_desa') {
+                        $foto = $user->kepalaDesa->foto ?? 'default.png';
+                    }
+                @endphp
+
                 <img class="img-profile rounded-circle"
-                    src="{{ asset('storage/foto_profil/' . Auth::user()->foto) }}">
+                    src="{{ asset('storage/foto_profil/' . $foto) }}">
             </a>
             <!-- Dropdown -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

@@ -91,12 +91,15 @@
         </thead>
         <tbody>
             @forelse($users as $user)
+            @php
+                $masyarakat = $user->masyarakat;
+            @endphp
             <tr>
                 <td>{{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}</td>
                 <td>{{ $user->name }}</td>
-                <td>{{ $user->nik }}</td>
-                <td>{{ $user->no_telp }}</td>
-                <td>{{ $user->alamat }}</td>
+                <td>{{ $masyarakat?->nik ?? '-' }}</td>
+                <td>{{ $masyarakat?->no_telp ?? '-' }}</td>
+                <td>{{ $masyarakat?->alamat ?? '-' }}</td>
                 <td>{{ $user->email }}</td>
                 <td>
                     <div class="d-flex align-items-center">
@@ -108,7 +111,6 @@
                         </form>
                     </div>
                 </td>
-
             </tr>
             @empty
             <tr>

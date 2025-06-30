@@ -28,72 +28,72 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-
         $user = $request->user();
 
-        // Hapus foto lama jika akan diganti
-        if ($request->filled('cropped_image')) {
+        // Tentukan model tempat menyimpan foto berdasarkan role
+        $profilModel = null;
 
-            // Hapus foto lama
-            if ($user->foto && $user->foto !== 'default.png' && \Storage::disk('public')->exists('foto_profil/' . $user->foto)) {
-                \Storage::disk('public')->delete('foto_profil/' . $user->foto);
-            }
-
-            // Simpan foto baru dari base64
-            $base64Image = $request->input('cropped_image');
-            if (preg_match('/^data:image\/(\w+);base64,/', $base64Image)) {
-                $base64Image = substr($base64Image, strpos($base64Image, ',') + 1);
-                $base64Image = base64_decode($base64Image);
-
-                $manager = new ImageManager(new Driver());
-                $image = $manager->read($base64Image)->toJpeg(80);
-                $filename = 'foto_' . time() . '.jpg';
-
-                \Storage::disk('public')->put("foto_profil/{$filename}", $image);
-                $user->foto = $filename;
-            } else {
-                return back()->with('error', 'Gagal membaca gambar hasil crop.');
-            }
+        if ($user->role === 'masyarakat') {
+            $profilModel = $user->masyarakat;
+        } elseif ($user->role === 'admin') {
+            $profilModel = $user->admin;
+        } elseif ($user->role === 'kepala_desa') {
+            $profilModel = $user->kepalaDesa;
         }
 
-    // hanya proses file jika *tidak* ada cropped_image
-    elseif (!$request->filled('cropped_image') && $request->hasFile('foto')) {
-        $file = $request->file('foto');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $path = $file->storeAs('foto_profil', $filename, 'public');
+        // === HANDLE FOTO === //
+        if ($profilModel) {
+            if ($request->filled('cropped_image')) {
+                if ($profilModel->foto && $profilModel->foto !== 'default.png' && \Storage::disk('public')->exists('foto_profil/' . $profilModel->foto)) {
+                    \Storage::disk('public')->delete('foto_profil/' . $profilModel->foto);
+                }
 
-        if ($user->foto && \Storage::disk('public')->exists('foto_profil/' . $user->foto)) {
-            \Storage::disk('public')->delete('foto_profil/' . $user->foto);
-        }
+                $base64Image = $request->input('cropped_image');
+                if (preg_match('/^data:image\/(\w+);base64,/', $base64Image)) {
+                    $base64Image = base64_decode(substr($base64Image, strpos($base64Image, ',') + 1));
+                    $manager = new ImageManager(new Driver());
+                    $image = $manager->read($base64Image)->toJpeg(80);
+                    $filename = 'foto_' . time() . '.jpg';
+                    \Storage::disk('public')->put("foto_profil/{$filename}", $image);
+                    $profilModel->foto = $filename;
+                } else {
+                    return back()->with('error', 'Gagal membaca gambar hasil crop.');
+                }
+            } elseif ($request->hasFile('foto')) {
+                $file = $request->file('foto');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('foto_profil', $filename, 'public');
 
-        $user->foto = $filename;
-    }
+                if ($profilModel->foto && $profilModel->foto !== 'default.png' && \Storage::disk('public')->exists('foto_profil/' . $profilModel->foto)) {
+                    \Storage::disk('public')->delete('foto_profil/' . $profilModel->foto);
+                }
 
-
-        // Kalau tidak ada cropped_image tapi user upload langsung
-        elseif ($request->hasFile('foto')) {
-            $file = $request->file('foto');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('foto_profil', $filename, 'public');
-
-            if ($user->foto && \Storage::disk('public')->exists('foto_profil/' . $user->foto)) {
-                \Storage::disk('public')->delete('foto_profil/' . $user->foto);
+                $profilModel->foto = $filename;
             }
 
-            $user->foto = $filename;
+            $profilModel->save();
         }
 
-        // Simpan data lainnya
-        // Ambil semua data validasi, tapi kecualikan field 'foto'
-        $data = $request->except('foto', 'cropped_image');
-        $user->fill($data);
-
+        // === UPDATE DATA USER === //
+        $user->fill([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+        ]);
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
 
         $user->save();
+
+        // === UPDATE DATA DETAIL SESUAI ROLE === //
+        if ($user->role === 'masyarakat' && $user->masyarakat) {
+            $user->masyarakat->update([
+                'nik' => $request->input('nik'),
+                'no_telp' => $request->input('no_telp'),
+                'alamat' => $request->input('alamat'),
+            ]);
+        }
 
         return Redirect::route('profile.show')->with('success', 'Profil berhasil diperbarui!');
     }
