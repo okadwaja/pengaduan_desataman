@@ -69,8 +69,8 @@
                 <p><span class="label">Tanggal Terdaftar:</span> {{ $user->created_at->format('d/m/Y H:i') }} WITA</p>
             </div>
             <div class="col-image">
-                @if ($masyarakat?->foto && file_exists(public_path('storage/foto_profil/' . $masyarakat->foto)))
-                    <img class="image" src="{{ public_path('storage/foto_profil/' . $masyarakat->foto) }}" alt="Foto User">
+                @if ($masyarakat->foto)
+                    <img class="image" src="{{ asset('storage/foto_profil/' . $masyarakat->foto) }}" alt="Foto User">
                 @else
                     <p>Tidak ada foto</p>
                 @endif

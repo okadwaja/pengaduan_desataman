@@ -10,6 +10,11 @@ class KepalaDesa extends Model
     use HasFactory;
 
     protected $table = 'kepala_desa';
+    protected $primaryKey = 'user_id';
+    public $incrementing = false;
+    protected $keyType = 'int';
+    
+    public $timestamps = false;
     
     protected $fillable = [
         'user_id', 'nip', 'no_telp', 'foto', 'masa_jabatan'
