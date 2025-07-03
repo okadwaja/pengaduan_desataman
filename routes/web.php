@@ -75,6 +75,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/user/{id}/export/pdf', [UserController::class, 'exportDetailPdf'])
         ->name('users.export.detail.pdf');
 
+    // Daftar Petugas
+    Route::prefix('petugas')->group(function () {
+        Route::get('/', [\App\Http\Controllers\AdminPetugasController::class, 'index'])->name('petugas.index');
+        Route::get('/create', [\App\Http\Controllers\AdminPetugasController::class, 'create'])->name('petugas.create');
+        Route::post('/store', [\App\Http\Controllers\AdminPetugasController::class, 'store'])->name('petugas.store');
+        Route::get('/{id}', [\App\Http\Controllers\AdminPetugasController::class, 'show'])->name('petugas.show');
+    });
+
 });
 
 // Route untuk masyarakat

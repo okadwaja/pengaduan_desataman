@@ -24,11 +24,17 @@
             <span>Daftar Pengaduan</span></a>
     </li>
 
-    <!-- Menu Users -->
+    <!-- Menu Masyarakat -->
     <li class="nav-item">
         <a class="nav-link" href="{{ route('admin.users.index') }}">
             <i class="fas fa-fw fa-user"></i>
-            <span>Daftar User</span></a>
+            <span>Daftar Masyarakat</span></a>
+    </li>
+    <!-- Menu Petugas -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.petugas.index') }}">
+            <i class="fas fa-fw fa-user"></i>
+            <span>Daftar Petugas</span></a>
     </li>
 
     <!-- Logout -->

@@ -104,7 +104,7 @@
                 <td>
                     <div class="d-flex align-items-center">
                         <a href="{{ route('admin.user.show', $user->id) }}" class="btn btn-sm btn-info me-2">View Detail</a>
-                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display:inline;" id="delete-form-{{ $user->id }}">
+                        <form action="{{ route('admin.users.destroy', $user->id) }}?from=users" method="POST" id="delete-form-{{ $user->id }}">
                             @csrf
                             @method('DELETE')
                             <button type="button" class="btn btn-danger btn-sm ms-2" onclick="confirmDelete({{ $user->id }})">Hapus</button>

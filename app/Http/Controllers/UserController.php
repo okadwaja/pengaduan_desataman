@@ -57,8 +57,15 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
+        $from = request('from');
+
+        if ($from === 'petugas') {
+            return redirect()->route('admin.petugas.index')->with('success', 'Petugas berhasil dihapus.');
+        }
+
         return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
     }
+
 
     public function show($id)
     {
