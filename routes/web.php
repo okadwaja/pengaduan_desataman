@@ -10,7 +10,7 @@ use App\Http\Controllers\MasyarakatDashboardController;
 use App\Http\Controllers\PengaduanExportController;
 use App\Http\Controllers\UserExportController;
 use App\Http\Controllers\KepalaDesaDashboardController;
-
+use App\Http\Controllers\AdminPetugasController;
 
 
 
@@ -74,6 +74,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Route export PDF detail users
     Route::get('/user/{id}/export/pdf', [UserController::class, 'exportDetailPdf'])
         ->name('users.export.detail.pdf');
+    
+    // Manajemen Petugas (admin & kepala desa)
+    Route::prefix('petugas')->name('petugas.')->group(function () {
+        Route::get('/', [AdminPetugasController::class, 'index'])->name('index');
+        Route::get('/create', [AdminPetugasController::class, 'create'])->name('create');
+        Route::post('/', [AdminPetugasController::class, 'store'])->name('store');
+        Route::get('/{id}', [AdminPetugasController::class, 'show'])->name('show');
+        Route::delete('/{id}', [AdminPetugasController::class, 'destroy'])->name('destroy');
+    });
 
 });
 

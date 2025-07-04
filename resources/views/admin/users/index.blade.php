@@ -25,7 +25,7 @@
     @endif
 
 <div class="container">
-    <h1 class="text-main mb-2">Data Pengguna</h1>
+    <h1 class="text-main mb-2">Daftar Masyarakat</h1>
 
     <form method="GET" action="{{ route('admin.users.index') }}" class="d-flex justify-content-between align-items-center flex-wrap mb-3 gap-2">
 
@@ -120,7 +120,7 @@
                 function confirmDelete(id) {
                     Swal.fire({
                         title: 'Apakah Anda yakin?',
-                        text: 'Data pengaduan ini akan dihapus!',
+                        text: 'Data masyarakat ini akan dihapus!',
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonText: 'Ya, Hapus!',

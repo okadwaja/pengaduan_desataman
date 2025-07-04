@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <h1 class="text-main mb-2">Data Pengaduan</h1>
+    <h1 class="text-main mb-2">Daftar Pengaduan</h1>
 
 
     <form method="GET" action="{{ route('admin.pengaduan.index') }}" class="d-flex flex-wrap gap-2 mb-3">

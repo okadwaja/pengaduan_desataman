@@ -13,7 +13,7 @@ class UserController extends Controller
     {
         \Carbon\Carbon::setLocale('id');
 
-        $query = User::where('role', '!=', 'admin');
+        $query = User::where('role', 'masyarakat');
 
         // Search by name, nik, or email
         if ($request->filled('search')) {
