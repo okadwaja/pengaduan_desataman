@@ -63,11 +63,7 @@
         {{-- Export Data --}}
         <div class="d-flex justify-content-end">
             <a href="{{ route('admin.users.export.pdf', request()->query()) }}" class="btn btn-danger btn-sm me-2">
-                <i class="fas fa-file-pdf"></i> Export PDF
-            </a>
-
-            <a href="{{ route('admin.users.export.excel', request()->query()) }}" class="btn btn-success btn-sm">
-                <i class="fas fa-file-excel"></i> Export Excel
+                <i class="fas fa-file-pdf"></i> Cetak Laporan Pengguna
             </a>
 
         </div>

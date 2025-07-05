@@ -19,7 +19,7 @@
         <div class="flex-grow-1" style="min-width: 180px;">
             <select name="status" class="form-select" onchange="this.form.submit()">
                 <option value="">-- Semua Status --</option>
-                @foreach (['terverifikasi', 'diproses', 'ditolak', 'dieksekusi', 'ditunda', 'tidak dieksekusi' ] as $status)
+                @foreach (['terverifikasi', 'diproses', 'ditolak', 'dieksekusi', 'ditunda' ] as $status)
                     <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
                         {{ ucfirst($status) }}
                     </option>
@@ -45,11 +45,11 @@
         {{-- Tombol Export --}}
         <div class="d-flex gap-2">
             <a href="{{ route('kepala_desa.pengaduan.export.pdf', request()->query()) }}" class="btn btn-sm btn-danger">
-                <i class="fas fa-file-pdf"></i> PDF
+                <i class="fas fa-file-pdf"></i> Cetak Laporan Pengaduan
             </a>
-            <a href="{{ route('kepala_desa.pengaduan.export.excel', request()->query()) }}" class="btn btn-sm btn-success">
+            <!-- <a href="{{ route('kepala_desa.pengaduan.export.excel', request()->query()) }}" class="btn btn-sm btn-success">
                 <i class="fas fa-file-excel"></i> Excel
-            </a>
+            </a> -->
         </div>
 
     </form>
@@ -87,7 +87,6 @@
                             'menunggu' => 'warning',
                             'diproses' => 'primary',
                             'dieksekusi'  => 'success',
-                            'tidak dieksekusi' => 'danger',
                             'ditunda' => 'dark',
                             'ditolak'  => 'danger',
                             'terverifikasi' => 'info',
@@ -109,7 +108,7 @@
                         <td>
                         @php
                             $status = strtolower($item->status);
-                            $disableTombol = in_array($status, ['dieksekusi', 'ditolak', 'tidak dieksekusi']);
+                            $disableTombol = in_array($status, ['dieksekusi', 'ditolak']);
                         @endphp
 
                         @if($disableTombol)

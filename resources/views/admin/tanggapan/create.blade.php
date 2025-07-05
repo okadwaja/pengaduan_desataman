@@ -22,7 +22,6 @@
                 $statusOptions = [
                     'dieksekusi' => 'Dieksekusi',
                     'ditunda' => 'Ditunda',
-                    'tidak dieksekusi' => 'Tidak Dieksekusi'
                 ];
             } else {
                 $statusOptions = ['diproses' => 'Diproses', 'ditolak' => 'Ditolak']; // fallback

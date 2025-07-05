@@ -9,7 +9,7 @@
 
 <div class="row">
     <!-- Total -->
-    <div class="col-xl-12 col-md-4 mb-4">
+    <div class="col-xl-2 col-md-4 mb-4">
         <div class="card bg-main shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
@@ -22,9 +22,6 @@
             </div>
         </div>
     </div>
-</div>
-
-<div class="row">
     <!-- Terverifikasi -->
     <div class="col-xl-2 col-md-4 mb-4">
         <div class="card border-left-info shadow h-100 py-2">
@@ -37,23 +34,6 @@
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-file fa-2x text-info"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Ditolak -->
-    <div class="col-xl-2 col-md-4 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                            Pengaduan Ditolak</div>
-                        <div class="h5 mb-0 font-weight-bold text-danger">{{ $jumlahDitolak }}</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-times-circle fa-2x text-danger"></i>
                     </div>
                 </div>
             </div>
@@ -72,6 +52,23 @@
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-redo fa-2x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Ditolak -->
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            Pengaduan Ditolak</div>
+                        <div class="h5 mb-0 font-weight-bold text-danger">{{ $jumlahDitolak }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-times-circle fa-2x text-danger"></i>
                     </div>
                 </div>
             </div>
@@ -108,24 +105,6 @@
                         </div>
                     <div class="col-auto">
                         <i class="fas fa-stop-circle fa-2x text-dark"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Tidak Dieksekusi -->
-    <div class="col-xl-2 col-md-4 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                            Pengaduan Tidak Dieksekusi
-                        </div>
-                            <div class="h5 mb-0 mr-3 font-weight-bold text-danger">{{ $jumlahTidak_dieksekusi }}</div>
-                        </div>
-                    <div class="col-auto">
-                        <i class="fas fa-times fa-2x text-danger"></i>
                     </div>
                 </div>
             </div>

@@ -16,7 +16,6 @@ class KepalaDesaDashboardController extends Controller
         $jumlahDiproses = Pengaduan::where('status', 'diproses')->count();
         $jumlahDieksekusi = Pengaduan::where('status', 'dieksekusi')->count();
         $jumlahDitunda = Pengaduan::where('status', 'ditunda')->count();
-        $jumlahTidak_dieksekusi = Pengaduan::where('status', 'tidak dieksekusi')->count();
         $jumlahDitolak = Pengaduan::where('status', 'ditolak')->count();
         $jumlahTotal = Pengaduan::whereNotIn('status', ['menunggu', 'berkas tidak valid'])->count();
 
@@ -41,7 +40,6 @@ class KepalaDesaDashboardController extends Controller
             'jumlahDiproses',
             'jumlahDieksekusi',
             'jumlahDitunda',
-            'jumlahTidak_dieksekusi',
             'jumlahDitolak',
             'jumlahTotal',
             'monthlyData',

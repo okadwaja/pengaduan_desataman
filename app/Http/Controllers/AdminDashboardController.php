@@ -17,7 +17,6 @@ class AdminDashboardController extends Controller
         $jumlahDieksekusi = Pengaduan::where('status', 'dieksekusi')->count();
         $jumlahDitolak = Pengaduan::where('status', 'ditolak')->count();
         $jumlahDitunda = Pengaduan::where('status', 'ditunda')->count();
-        $jumlahTidak_dieksekusi = Pengaduan::where('status', 'tidak dieksekusi')->count();
         $jumlahTotal = Pengaduan::count();
 
         $monthlyData = [];
@@ -40,7 +39,6 @@ class AdminDashboardController extends Controller
             'jumlahDiproses',
             'jumlahDieksekusi',
             'jumlahDitunda',
-            'jumlahTidak_dieksekusi',
             'jumlahDitolak',
             'jumlahTotal',
             'monthlyData',

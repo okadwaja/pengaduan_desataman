@@ -26,7 +26,7 @@ class PengaduanExport implements FromCollection, WithHeadings, WithMapping, With
 
         // Filter untuk role kepala desa
         if (auth()->user()->role === 'kepala_desa') {
-            $query->whereIn('status', ['terverifikasi', 'diproses', 'dieksekusi', 'ditolak', 'ditunda', 'tidak dieksekusi']);
+            $query->whereIn('status', ['terverifikasi', 'diproses', 'dieksekusi', 'ditolak', 'ditunda']);
         }
 
         if ($this->request->filled('search')) {

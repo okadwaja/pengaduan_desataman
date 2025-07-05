@@ -78,7 +78,6 @@
                             'menunggu' => 'warning',
                             'diproses' => 'primary',
                             'dieksekusi'  => 'success',
-                            'tidak dieksekusi' => 'danger',
                             'ditunda' => 'dark',
                             'ditolak'  => 'danger',
                             'terverifikasi' => 'info',

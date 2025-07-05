@@ -43,7 +43,6 @@
                         'ditolak'  => 'danger',
                         'terverifikasi' => 'info',
                         'berkas tidak valid' => 'danger',
-                        'tidak dieksekusi' => 'danger',
                         'ditunda' => 'dark',
                         default    => 'secondary'
                     };

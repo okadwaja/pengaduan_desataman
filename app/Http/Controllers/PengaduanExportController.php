@@ -48,7 +48,7 @@ class PengaduanExportController extends Controller
 
         // filter sesuai role Kepala Desa
         if (auth()->user()->role === 'kepala_desa') {
-            $query->whereIn('status', ['terverifikasi', 'diproses', 'dieksekusi', 'ditolak', 'ditunda', 'tidak dieksekusi']);
+            $query->whereIn('status', ['terverifikasi', 'diproses', 'dieksekusi', 'ditolak', 'ditunda']);
         }
 
         return $query->latest();
