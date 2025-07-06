@@ -52,7 +52,7 @@
                 </div>
                 <div class="col-image">
                     @if ($pengaduan->tanggapan->foto)
-                        <img class="image" src="{{ public_path('storage/foto_tanggapan/' . $pengaduan->tanggapan->foto) }}" alt="Foto Tanggapan">
+                        <img class="image" src="{{ asset('storage/foto_tanggapan/' . $pengaduan->tanggapan->foto) }}" alt="Foto Tanggapan">
                     @else
                         <p>Tidak ada foto</p>
                     @endif

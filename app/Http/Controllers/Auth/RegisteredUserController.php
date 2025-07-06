@@ -34,8 +34,8 @@ class RegisteredUserController extends Controller
             'alamat' => 'required|string|max:255',
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'nik' => ['required', 'digits:16'],
-            'no_telp' => ['required', 'string', 'max:20'],
+            'nik' => ['required', 'regex:/^[0-9]{16}$/', 'unique:users,nik'],
+            'no_telp' => ['required', 'regex:/^[0-9+\-\s()]{8,20}$/', 'max:20'],
         ]);
 
         $user = User::create([

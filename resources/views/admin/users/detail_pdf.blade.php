@@ -66,7 +66,7 @@
             </div>
             <div class="col-image">
                 @if ($user->foto)
-                    <img class="image" src="{{ public_path('storage/foto_profil/' . $user->foto) }}" alt="Foto User">
+                    <img class="image" src="{{ asset('storage/foto_profil/' . $user->foto) }}" alt="Foto User">
                 @else
                     <p>Tidak ada foto</p>
                 @endif

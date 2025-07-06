@@ -86,7 +86,7 @@
 
             @if ($pengaduan->tanggapan->foto)
                 <div style="margin-top: 10px; text-align: center;">
-                    <img class="image" src="{{ public_path('storage/foto_tanggapan/' . $pengaduan->tanggapan->foto) }}" alt="Foto Tanggapan">
+                    <img class="image" src="{{ asset('storage/foto_tanggapan/' . $pengaduan->tanggapan->foto) }}" alt="Foto Tanggapan">
                 </div>
             @else
                 <p><em>Tidak ada foto tanggapan</em></p>
