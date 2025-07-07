@@ -36,7 +36,7 @@
             <div class="d-flex justify-content-between">
                 <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Kembali</a>
                 <a href="{{ route('admin.users.export.detail.pdf', $user->id) }}" class="btn btn-danger" target="_blank">
-                    <i class="fas fa-file-pdf"></i> Download PDF
+                    <i class="fas fa-file-pdf"></i> Cetak Detail Pengguna
                 </a>
             </div>
         </div>

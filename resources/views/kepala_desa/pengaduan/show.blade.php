@@ -4,9 +4,9 @@
 <div class="container text-main">
     <h1>Detail Pengaduan</h1>
 
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-end mt-2">
         <a href="{{ route('kepala_desa.pengaduan.export.detail.pdf', $pengaduan->id) }}" class="btn btn-sm btn-danger mb-1" target="_blank">
-            <i class="fas fa-file-pdf"></i> Download PDF
+            <i class="fas fa-file-pdf"></i> Cetak Detail Pengaduan
         </a>
     </div>
 
