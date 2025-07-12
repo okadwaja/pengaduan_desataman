@@ -554,8 +554,17 @@ class PengaduanController extends Controller
         \Log::info('Tanggapan berhasil disimpan');
 
         $user = auth()->user();
-        $route = $user->role === 'kepala_desa' ? 'kepala_desa.pengaduan.index' : 'admin.pengaduan.index';
-        return redirect()->route($route)->with('success', 'Tanggapan berhasil disimpan.');
+
+        if ($user->role === 'kepala_desa') {
+            $route = 'kepala_desa.pengaduan.index';
+            $message = 'Tanggapan berhasil disimpan.';
+        } else {
+            $route = 'admin.pengaduan.index';
+            $message = 'Verifikasi berhasil disimpan.';
+        }
+
+        return redirect()->route($route)->with('success', $message);
+
     }
 
     private function fixImageOrientation(\Imagick $image)

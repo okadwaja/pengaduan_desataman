@@ -21,7 +21,8 @@
             <div class="form-group mb-3">
                 <label>Foto</label>
                 <input type="file" name="foto" class="form-control" id="foto-input" accept="image/*,.heic,.heif" onchange="previewImage(event)">
-
+                <small class="text-muted">*Max 8Mb File:jpeg,png,jpg</small>
+                
                 <!-- Preview foto -->
                 <div
                     id="preview-container"

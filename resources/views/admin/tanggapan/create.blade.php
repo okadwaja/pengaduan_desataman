@@ -31,7 +31,7 @@
 
 
 <div class="container text-main">
-    <h1>{{ $isKepalaDesa ? $judulKades : 'Verifikasi Pengaduan' }}</h1>
+    <h1>{{ $isKepalaDesa ? $judulKades : 'Verifikasi Berkas Pengaduan' }}</h1>
 
     <div class="card mt-3 border-left-main">
         <div class="card-body">
