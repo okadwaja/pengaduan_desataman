@@ -35,13 +35,13 @@
 
         <div class="form-group mb-3">
             <label for="nik">NIK</label>
-            <input type="text" name="nik" class="form-control" value="{{ old('nik') }}" required>
+            <input type="text" name="nik" class="form-control" value="{{ old('nik') }}" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
             @error('nik') <div class="text-danger">{{ $message }}</div> @enderror
         </div>
 
         <div class="form-group mb-3">
             <label for="no_telp">No Telepon</label>
-            <input type="text" name="no_telp" class="form-control" value="{{ old('no_telp') }}" required>
+            <input type="text" name="no_telp" class="form-control" value="{{ old('no_telp') }}" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
             @error('no_telp') <div class="text-danger">{{ $message }}</div> @enderror
         </div>
 

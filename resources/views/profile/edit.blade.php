@@ -57,13 +57,13 @@
                     {{-- NIK --}}
                     <div class="form-group mb-3">
                         <label for="nik" class="form-label">NIK</label>
-                        <input type="text" id="nik" name="nik" class="form-control border-left-main" value="{{ old('nik', $user->nik) }}" required>
+                        <input type="text" id="nik" name="nik" class="form-control border-left-main" value="{{ old('nik', $user->nik) }}" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                     </div>
 
                     {{-- No Telepon --}}
                     <div class="form-group mb-3">
                         <label for="no_telp" class="form-label">No Telepon</label>
-                        <input type="text" id="no_telp" name="no_telp" class="form-control border-left-main" value="{{ old('no_telp', $user->no_telp) }}" required>
+                        <input type="text" id="no_telp" name="no_telp" class="form-control border-left-main" value="{{ old('no_telp', $user->no_telp) }}" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                     </div>
 
                     {{-- Alamat --}}

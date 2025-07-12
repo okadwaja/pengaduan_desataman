@@ -16,10 +16,10 @@
                 <input type="text" name="name" class="form__input" placeholder="Nama Lengkap" value="{{ old('name') }}" required>
                 @error('name') <div class="text-danger">{{ $message }}</div> @enderror
 
-                <input type="text" name="nik" class="form__input" placeholder="NIK" value="{{ old('nik') }}" required>
+                <input type="text" name="nik" class="form__input" placeholder="NIK" value="{{ old('nik') }}" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                 @error('nik') <div class="text-danger">{{ $message }}</div> @enderror
 
-                <input type="text" name="no_telp" class="form__input" placeholder="No. Telepon" value="{{ old('no_telp') }}" required>
+                <input type="text" name="no_telp" class="form__input" placeholder="No. Telepon" value="{{ old('no_telp') }}" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                 @error('no_telp') <div class="text-danger">{{ $message }}</div> @enderror
 
                 <select name="alamat" class="form__input" required>
