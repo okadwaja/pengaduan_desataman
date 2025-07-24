@@ -44,6 +44,10 @@
             color: white;
             padding: 2rem;
         }
+        .btn-main {
+            background-color: #113974 !important;
+            color: white !important;
+        }
         .btn-custom {
             background-color: #fff;
             color: #113974;
@@ -154,6 +158,92 @@
                 </div>
             </div>
         </div>
+
+        <div class="container my-5">
+            <h3 class="mb-4 text-center text-main">Daftar Pengaduan Bulan {{ \Carbon\Carbon::createFromFormat('m', $bulan)->locale('id')->isoFormat('MMMM') }} {{ $tahun }}</h3>
+
+            <!-- Form filter bulan -->
+            <div class="d-flex justify-content-center">
+                <form method="GET" class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <select name="bulan" class="form-select" required>
+                            @foreach(range(1, 12) as $i)
+                                <option value="{{ sprintf('%02d', $i) }}" {{ $bulan == sprintf('%02d', $i) ? 'selected' : '' }}>
+                                    {{ \Carbon\Carbon::createFromFormat('m', $i)->locale('id')->isoFormat('MMMM') }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" name="tahun" class="form-control" value="{{ $tahun }}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-main w-100" type="submit">Tampilkan</button>
+                    </div>
+                </form>
+            </div>
+
+            @if ($pengaduan->count())
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover small table-striped">
+                        <thead class="table-light text-center align-middle">
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Pelapor</th>
+                                <th>Judul</th>
+                                <th>Isi</th>
+                                <th>Tanggal Laporan</th>
+                                <th>Status</th>
+                                <th>Tanggapan</th>
+                                <th>Tanggal Tanggapan</th>
+                                <th>Gambar</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-start">
+                            @foreach ($pengaduan as $i => $item)
+                                <tr>
+                                    <td>{{ $i + 1 }}</td>
+                                    <td>{{ $item->user->name ?? '-' }}</td>
+                                    <td>{{ $item->judul }}</td>
+                                    <td>{{ Str::limit($item->isi, 100) }}</td>
+                                    <td>{{ $item->created_at->format('d M Y') }}</td>
+                                    @php
+                                        $status = strtolower($item->status);
+                                        $badgeClass = match($status) {
+                                            'menunggu' => 'warning',
+                                            'diproses' => 'primary',
+                                            'dieksekusi'  => 'success',
+                                            'ditolak'  => 'danger',
+                                            'terverifikasi' => 'info',
+                                            'berkas tidak valid' => 'danger',
+                                            'ditunda' => 'dark',
+                                            default    => 'secondary'
+                                        };
+                                    @endphp
+                                    <td>
+                                        <span class="badge bg-{{ $badgeClass }} text-white">
+                                            {{ ucfirst($item->status) }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $item->tanggapan->komentar ?? '-' }}</td>
+                                    <td>{{ $item->tanggapan?->created_at ? $item->tanggapan->created_at->format('d M Y') : '-' }}</td>
+                                    <td>
+                                        @if($item->foto)
+                                            <img src="{{ asset('storage/foto_pengaduan/' . $item->foto) }}" alt="foto" style="width: 60px; cursor: pointer;" onclick="showImage('{{ asset('storage/foto_pengaduan/' . $item->foto) }}')">
+                                        @else
+                                            Tidak ada
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <p class="text-center text-muted">Belum ada pengaduan di bulan ini.</p>
+            @endif
+        </div>
+
     </div>
 
     <!-- Footer -->
@@ -164,5 +254,26 @@
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+
+    <!-- Modal Gambar -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-transparent border-0">
+                <div class="modal-body text-center">
+                    <img src="" id="modalImage" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showImage(url) {
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = url;
+            const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            modal.show();
+        }
+    </script>
+
 </body>
 </html>

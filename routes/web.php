@@ -11,13 +11,15 @@ use App\Http\Controllers\PengaduanExportController;
 use App\Http\Controllers\UserExportController;
 use App\Http\Controllers\KepalaDesaDashboardController;
 use App\Http\Controllers\AdminPetugasController;
-
+use App\Http\Controllers\WelcomeController;
 
 
 // Route awal (halaman landing)
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 // Route dashboard umum, redirect berdasarkan role
 Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
